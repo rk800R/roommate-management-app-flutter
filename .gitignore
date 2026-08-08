@@ -2,7 +2,6 @@
 # Dependencies
 .dart_tool/
 .build/
-dependencies/
 
 # Logs and temp files
 *.log
@@ -14,14 +13,9 @@ dependencies/
 .env.local
 *.env.*
 
-# Editor/IDE
-.idea/
+# Editors
 .vscode/
-*.iml
-*.ipr
-*.iws
-*.swp
-*.swo
+.idea/
 
 # OS generated files
 .DS_Store
