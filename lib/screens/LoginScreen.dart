@@ -1,7 +1,7 @@
-import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../theme/styling/appstyling.dart';
 import 'HomeScreen.dart';
 
 /// A modern, dark-theme login screen with a glassmorphism aesthetic.
@@ -160,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF080B16),
+      backgroundColor: AppColors.background,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -173,17 +173,17 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Stack(
           children: [
             // Soft glowing orbs for depth behind the glass.
-            const _GlowOrb(
+            AppWidgets.glowOrb(
               top: -120,
               right: -100,
               size: 280,
-              color: Color(0xFF6D5DF6),
+              color: AppColors.violetOrb,
             ),
-            const _GlowOrb(
+            AppWidgets.glowOrb(
               bottom: -140,
               left: -110,
               size: 320,
-              color: Color(0xFF3B82F6),
+              color: AppColorsExtended.blueBrand,
             ),
             SafeArea(
               child: Center(
@@ -235,19 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
           width: 64,
           height: 64,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Color(0xFF7C6BFF), Color(0xFF3B82F6)],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: const Color(0xFF7C6BFF).withValues(alpha: 0.45),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
+            gradient: AppGradientsExtended.brand,
+            borderRadius: BorderRadius.circular(AppRadiiExtended.logo),
+            boxShadow: [AppShadowsExtended.logo],
           ),
           child: const Icon(Icons.group_rounded, color: Colors.white, size: 32),
         ),
@@ -330,34 +320,34 @@ class _LoginScreenState extends State<LoginScreen> {
     return InputDecoration(
       labelText: label,
       hintText: hint,
-      hintStyle: const TextStyle(color: Color(0xFF6B7489)),
-      labelStyle: const TextStyle(color: Color(0xFF9AA3B5)),
-      prefixIcon: Icon(icon, color: const Color(0xFF7C8A9F), size: 22),
+      hintStyle: AppTextStylesExtended.inputHint,
+      labelStyle: AppTextStylesExtended.inputLabel,
+      prefixIcon: Icon(icon, color: AppColors.icon, size: 22),
       filled: true,
-      fillColor: Colors.white.withValues(alpha: 0.06),
-      errorStyle: const TextStyle(color: Color(0xFFFF8A8D), fontSize: 12),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      fillColor: AppColorsExtended.glassFillInput,
+      errorStyle: AppTextStylesExtended.choreDate.copyWith(color: AppColorsExtended.inputErrorBorder),
+      contentPadding: AppPadding.inputField,
       border: _glassBorder(),
       enabledBorder: _glassBorder(),
       focusedBorder: _glassBorder(isFocused: true),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFFF8A8D), width: 1),
+        borderRadius: BorderRadius.circular(AppRadiiExtended.input),
+        borderSide: const BorderSide(color: AppColorsExtended.inputErrorBorder, width: 1),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFFF8A8D), width: 1.4),
+        borderRadius: BorderRadius.circular(AppRadiiExtended.input),
+        borderSide: const BorderSide(color: AppColorsExtended.inputErrorBorder, width: 1.4),
       ),
     );
   }
 
   OutlineInputBorder _glassBorder({bool isFocused = false}) {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppRadiiExtended.input),
       borderSide: BorderSide(
         color: isFocused
-            ? const Color(0xFF7C6BFF).withValues(alpha: 0.8)
-            : Colors.white.withValues(alpha: 0.10),
+            ? AppColorsExtended.inputFocusedBorder
+            : AppColorsExtended.glassBorderInput,
         width: isFocused ? 1.4 : 1,
       ),
     );
@@ -367,23 +357,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return SizedBox(
       height: 54,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF7C6BFF), Color(0xFF3B82F6)],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF7C6BFF).withValues(alpha: 0.4),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
+        decoration: AppButtonStyles.decoration(enabled: !_isLoading),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: AppButtonStyles.border,
             onTap: _isLoading ? null : _login,
             child: Center(
               child: _isLoading
@@ -395,14 +373,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Colors.white,
                       ),
                     )
-                  : const Text(
+                  : Text(
                       'Sign In',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                        letterSpacing: 0.3,
-                      ),
+                      style: AppButtonStyles.textStyle(enabled: !_isLoading),
                     ),
             ),
           ),
@@ -415,9 +388,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
+        Text(
           "Don't have an account?",
-          style: TextStyle(color: Color(0xFF9AA3B5), fontSize: 14),
+          style: AppTextStyles.subtitle,
         ),
         TextButton(
           onPressed: () {
@@ -426,7 +399,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SnackBar(content: Text('Sign up is coming soon')),
             );
           },
-          style: TextButton.styleFrom(foregroundColor: const Color(0xFF9B8CFF)),
+          style: TextButton.styleFrom(foregroundColor: AppColors.link),
           child: const Text(
             'Sign up',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
@@ -450,71 +423,17 @@ class _GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(28),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.055),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
-                blurRadius: 40,
-                offset: const Offset(0, 20),
-              ),
-            ],
-          ),
-          child: child,
-        ),
-      ),
+    return AppWidgets.glassCard(
+      padding: AppPadding.cardLogin,
+      fillColor: AppColorsExtended.glassFillLogin,
+      borderColor: AppColorsExtended.glassBorderLogin,
+      blurSigma: 16,
+      child: child,
     );
   }
 }
 
-class _GlowOrb extends StatelessWidget {
-  const _GlowOrb({
-    this.top,
-    this.bottom,
-    this.left,
-    this.right,
-    required this.size,
-    required this.color,
-  });
 
-  final double? top;
-  final double? bottom;
-  final double? left;
-  final double? right;
-  final double size;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [
-              color.withValues(alpha: 0.35),
-              color.withValues(alpha: 0.0),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 /// Live-updating checklist of password strength requirements. It reacts to
 /// the password as the user types by reading the current field text.

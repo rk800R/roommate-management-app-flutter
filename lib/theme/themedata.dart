@@ -1,5 +1,3 @@
-library;
-
 import 'package:flutter/material.dart';
 
 /// Design tokens and theme for the Roommate app.
@@ -12,8 +10,8 @@ import 'package:flutter/material.dart';
 /// Brand and UI color tokens.
 abstract final class AppColors {
   // Brand
-  static const Color primary = Color(0xFF7C6BFF);
-  static const Color accentBlue = Color(0xFF3B82F6);
+  static const Color primary = Color.fromARGB(255, 218, 75, 57);
+  static const Color accentBlue = Color.fromARGB(255, 223, 179, 59);
   static const Color violetOrb = Color(0xFF6D5DF6);
   static const Color link = Color(0xFF9B8CFF);
 

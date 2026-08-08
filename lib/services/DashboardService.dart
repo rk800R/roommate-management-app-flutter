@@ -15,8 +15,8 @@ abstract final class FirestoreCollections {
 
 /// Formatting / currency helper.
 ///
-/// Update [currencySymbol] to match this app's currency (Icelandic króna by
-/// default given the project context). Whole numbers are shown without decimals.
+/// Update [symbol] to match this app's currency. Whole numbers are shown
+/// without decimals.
 abstract final class AppCurrency {
   static const String symbol = 'PKR';
 
@@ -70,6 +70,17 @@ class Chore {
       dueDate: due is Timestamp ? due.toDate() : null,
     );
   }
+
+  Map<String, dynamic> toMap() => {
+        'title': title,
+        if (description != null) 'description': description,
+        'assignedTo': assignedTo,
+        'category': category,
+        'priority': priority,
+        'points': points,
+        'completed': completed,
+        if (dueDate != null) 'dueDate': Timestamp.fromDate(dueDate!),
+      };
 }
 
 /// Supported values for [Chore.priority].
@@ -194,8 +205,7 @@ class DuesSummary {
       totalMonthlyDue <= 0 ? 0 : (totalPaid / totalMonthlyDue).clamp(0.0, 1.0);
 }
 
-
-/// Wraps Cloud Firestore reads for the dashboard.
+/// Wraps Cloud Firestore reads **and writes** for the dashboard.
 ///
 /// Mirrors the `AuthService` pattern: screens never talk to
 /// `FirebaseFirestore.instance` directly. Every getter returns a real-time
@@ -206,7 +216,10 @@ class DashboardService {
 
   final FirebaseFirestore _firestore;
 
-  Query<Object?> _collection(String name) => _firestore.collection(name);
+  CollectionReference<Map<String, dynamic>> _collection(String name) =>
+      _firestore.collection(name);
+
+  // ---- Real-time streams ---------------------------------------------------
 
   /// Real-time stream of **pending** (not yet completed) chores, soonest due
   /// first. Sorted server-side by `dueDate` only, with the completion filter
@@ -267,7 +280,6 @@ class DashboardService {
           );
         },
       );
-  }
 
   // ---- Chore writes (CRUD) --------------------------------------------------
 
@@ -297,15 +309,17 @@ class DashboardService {
   }
 
   /// Marks a chore done / undone in Firestore (live-syncs to every device).
-  Future<void> setChoreCompleted(String id, bool completed) => _collection(
-        FirestoreCollections.chores,
-      ).doc(id).update({'completed': completed});
+  Future<void> setChoreCompleted(String id, bool completed) =>
+      _collection(FirestoreCollections.chores).doc(id).update({
+        'completed': completed,
+      });
 
   /// Updates the mutable fields of an existing chore. Only non-`null` values
   /// are written, so partial updates (e.g. just re-assigning) are safe.
   Future<void> updateChore({
     required String id,
     String? title,
+    String? description,
     String? assignedTo,
     String? category,
     String? priority,
@@ -314,12 +328,14 @@ class DashboardService {
   }) async {
     final data = <String, dynamic>{
       if (title != null) 'title': title.trim(),
-      if (assignedTo != null) 'assignedTo': assignedTo,
-      if (category != null) 'category': category,
-      if (priority != null) 'priority': priority,
-      if (points != null) 'points': points,
+      if (description != null) 'description': description.trim(),
+      'assignedTo': ?assignedTo,
+      'category': ?category,
+      'priority': ?priority,
+      'points': ?points,
       if (dueDate != null) 'dueDate': Timestamp.fromDate(dueDate),
     };
+    if (data.isEmpty) return;
     await _collection(FirestoreCollections.chores).doc(id).update(data);
   }
 
@@ -381,4 +397,3 @@ Stream<T> combineLatest<A, B, T>(
 
   return controller.stream;
 }
-
