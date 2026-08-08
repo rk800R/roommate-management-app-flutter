@@ -39,7 +39,7 @@ class ValidationService {
   /// Ordered set of password requirements used by both the live checklist
   /// and the final regex validator.
   static final List<MapEntry<String, bool Function(String)>> requirements = [
-    MapEntry('At least 6 characters', (p) => p.length >= 8),
+    MapEntry('At least 6 characters', (p) => p.length >= 6),
     MapEntry(
       'At least one uppercase letter',
       (p) => p.contains(RegExp('[A-Z]')),
