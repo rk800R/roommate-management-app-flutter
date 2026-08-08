@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:roommate/screens/LoginScreen.dart';
+import 'services/AuthWrapper.dart';
+import 'theme/themedata.dart';
 
 void main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -19,12 +19,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application. 
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red[800]!),
-      ),
-      home: const LoginScreen()
+      title: 'Roommate',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.dark,
+      home: const AuthWrapper(),
     );
   }
 }
