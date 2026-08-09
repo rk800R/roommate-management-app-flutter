@@ -1,7 +1,11 @@
-```
 # Dependencies
 .dart_tool/
-.build/
+build/
+.cxx/
+
+# Flutter / IDE generated
+.flutter-plugins-dependencies
+*.iml
 
 # Logs and temp files
 *.log
