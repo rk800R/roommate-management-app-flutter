@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../services/AuthService.dart';
 import '../theme/styling/appstyling.dart';
-import 'HomeScreen.dart';
 
 /// A modern, dark-theme login screen with a glassmorphism aesthetic.
 ///
@@ -17,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -34,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   /// Passwords must be 8+ chars and contain at least one uppercase letter,
   /// one lowercase letter, one digit, and one special character.
+  /// Retained for future sign-up validation; login does not use this.
+  // ignore: unused_field
   static final RegExp _passwordStrengthRegex = RegExp(
     r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=\[\]{};:,.<>?/])\S{8,}$",
   );
@@ -41,10 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
   static bool _hasSpecialCharacter(String value) =>
       value.contains(RegExp(r"[!@#$%^&*()_\-+=\[\]{};:,.<>?/]"));
 
-  /// Ordered set of password requirements used by both the live checklist
-  /// and the final regex validator.
+  /// Ordered set of password requirements shown in the live checklist.
+  /// These are for future sign-up UI; login only requires a non-empty password.
   static final List<MapEntry<String, bool Function(String)>> _requirements = [
-    MapEntry("At least 6 characters", (p) => p.length >= 6),
+    MapEntry("At least 8 characters", (p) => p.length >= 8),
     MapEntry(
       "At least one uppercase letter",
       (p) => p.contains(RegExp("[A-Z]")),
@@ -75,13 +78,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
+  /// Login only requires that the password field is non-empty.
+  /// Strength requirements are enforced on sign-up, not login.
   String? _validatePassword(String? value) {
     final password = value ?? '';
     if (password.isEmpty) {
       return 'Password is required';
-    }
-    if (!_passwordStrengthRegex.hasMatch(password)) {
-      return 'Password must meet all requirements below';
     }
     return null;
   }
@@ -97,50 +99,19 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      // Use AuthService so Firebase is never called directly from the screen.
+      // AuthWrapper reacts to the resulting authStateChanges() event and
+      // navigates to HomeScreen automatically — no manual push needed.
+      await _authService.signIn(
         email: emailController.text.trim(),
         password: passwordController.text,
       );
-
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successful!'),
-          duration: Duration(seconds: 1),
-        ),
-      );
-
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
     } on FirebaseAuthException catch (e) {
-      _showError(_friendlyAuthMessage(e));
+      _showError(AuthService.friendlyMessage(e));
     } catch (_) {
       _showError('Something went wrong. Please try again.');
     } finally {
       if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  String _friendlyAuthMessage(FirebaseAuthException e) {
-    switch (e.code) {
-      case 'invalid-email':
-        return 'That email address looks invalid.';
-      case 'user-not-found':
-        return 'No account found for this email.';
-      case 'wrong-password':
-      case 'invalid-credential':
-        return 'Incorrect email or password.';
-      case 'too-many-requests':
-        return 'Too many attempts. Please try again later.';
-      case 'network-request-failed':
-        return 'Network error. Check your connection.';
-      default:
-        return 'Login failed (${e.code}). Please try again.';
     }
   }
 
@@ -205,10 +176,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 32),
                             _buildEmailField(),
                             const SizedBox(height: 18),
-                            _buildPasswordField(),
-                            const SizedBox(height: 14),
-                            _PasswordRequirements(
-                              password: passwordController.text,
+                            // Single ValueListenableBuilder covers both the
+                            // password field and the live requirements checklist
+                            // so the checklist updates on every keystroke.
+                            ValueListenableBuilder(
+                              valueListenable: passwordController,
+                              builder: (context, value, _) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildPasswordFieldInner(),
+                                    const SizedBox(height: 14),
+                                    _PasswordRequirements(password: value.text),
+                                  ],
+                                );
+                              },
                             ),
                             const SizedBox(height: 24),
                             _buildLoginButton(),
@@ -278,37 +260,34 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildPasswordField() {
-    return ValueListenableBuilder(
-      valueListenable: passwordController,
-      builder: (context, value, _) {
-        return TextFormField(
-          controller: passwordController,
-          obscureText: _obscurePassword,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (_) => _login(),
-          style: const TextStyle(color: Colors.white),
-          validator: _validatePassword,
-          inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
-          decoration:
-              _glassInputDecoration(
-                label: 'Password',
-                hint: 'Enter your password',
-                icon: Icons.lock_outline_rounded,
-              ).copyWith(
-                suffixIcon: IconButton(
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
-                  icon: Icon(
-                    _obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: const Color(0xFF9AA3B5),
-                  ),
-                ),
+  /// The inner password [TextFormField] — used inside the shared
+  /// [ValueListenableBuilder] in [build] so the checklist gets the same rebuild.
+  Widget _buildPasswordFieldInner() {
+    return TextFormField(
+      controller: passwordController,
+      obscureText: _obscurePassword,
+      textInputAction: TextInputAction.done,
+      onFieldSubmitted: (_) => _login(),
+      style: const TextStyle(color: Colors.white),
+      validator: _validatePassword,
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'\s'))],
+      decoration:
+          _glassInputDecoration(
+            label: 'Password',
+            hint: 'Enter your password',
+            icon: Icons.lock_outline_rounded,
+          ).copyWith(
+            suffixIcon: IconButton(
+              onPressed: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
+              icon: Icon(
+                _obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                color: const Color(0xFF9AA3B5),
               ),
-        );
-      },
+            ),
+          ),
     );
   }
 
@@ -325,18 +304,26 @@ class _LoginScreenState extends State<LoginScreen> {
       prefixIcon: Icon(icon, color: AppColors.icon, size: 22),
       filled: true,
       fillColor: AppColorsExtended.glassFillInput,
-      errorStyle: AppTextStylesExtended.choreDate.copyWith(color: AppColorsExtended.inputErrorBorder),
+      errorStyle: AppTextStylesExtended.choreDate.copyWith(
+        color: AppColorsExtended.inputErrorBorder,
+      ),
       contentPadding: AppPadding.inputField,
       border: _glassBorder(),
       enabledBorder: _glassBorder(),
       focusedBorder: _glassBorder(isFocused: true),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadiiExtended.input),
-        borderSide: const BorderSide(color: AppColorsExtended.inputErrorBorder, width: 1),
+        borderSide: const BorderSide(
+          color: AppColorsExtended.inputErrorBorder,
+          width: 1,
+        ),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(AppRadiiExtended.input),
-        borderSide: const BorderSide(color: AppColorsExtended.inputErrorBorder, width: 1.4),
+        borderSide: const BorderSide(
+          color: AppColorsExtended.inputErrorBorder,
+          width: 1.4,
+        ),
       ),
     );
   }
@@ -388,10 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "Don't have an account?",
-          style: AppTextStyles.subtitle,
-        ),
+        Text("Don't have an account?", style: AppTextStyles.subtitle),
         TextButton(
           onPressed: () {
             // TODO: wire up to a SignUpScreen when implemented.
@@ -432,8 +416,6 @@ class _GlassCard extends StatelessWidget {
     );
   }
 }
-
-
 
 /// Live-updating checklist of password strength requirements. It reacts to
 /// the password as the user types by reading the current field text.

@@ -33,7 +33,6 @@ abstract final class AppColorsExtended {
   static const Color shadowButton = Color(0x667C6BFF);
 }
 
-
 // ============================================================================
 // RADII
 // ============================================================================
@@ -49,7 +48,6 @@ abstract final class AppRadiiExtended {
   static const double toggle = 28;
 }
 
-
 // ============================================================================
 // PADDING
 // ============================================================================
@@ -58,15 +56,29 @@ abstract final class AppPadding {
   static const EdgeInsets card = EdgeInsets.all(20);
   static const EdgeInsets cardLogin = EdgeInsets.all(28);
 
-  static const EdgeInsets inputHorizontal = EdgeInsets.symmetric(horizontal: 16);
-  static const EdgeInsets inputField = EdgeInsets.symmetric(horizontal: 16, vertical: 18);
+  static const EdgeInsets inputHorizontal = EdgeInsets.symmetric(
+    horizontal: 16,
+  );
+  static const EdgeInsets inputField = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 18,
+  );
 
   static const EdgeInsets tileHorizontal = EdgeInsets.symmetric(horizontal: 16);
-  static const EdgeInsets tile = EdgeInsets.symmetric(horizontal: 16, vertical: 13);
+  static const EdgeInsets tile = EdgeInsets.symmetric(
+    horizontal: 16,
+    vertical: 13,
+  );
   static const EdgeInsets tileInner = EdgeInsets.all(14);
 
-  static const EdgeInsets badge = EdgeInsets.symmetric(horizontal: 8, vertical: 2);
-  static const EdgeInsets badgePts = EdgeInsets.symmetric(horizontal: 8, vertical: 0);
+  static const EdgeInsets badge = EdgeInsets.symmetric(
+    horizontal: 8,
+    vertical: 2,
+  );
+  static const EdgeInsets badgePts = EdgeInsets.symmetric(
+    horizontal: 8,
+    vertical: 0,
+  );
 
   static const EdgeInsets pageHorizontal = EdgeInsets.symmetric(horizontal: 20);
   static const EdgeInsets pageVertical = EdgeInsets.symmetric(vertical: 32);
@@ -79,7 +91,6 @@ abstract final class AppPadding {
   static const SizedBox space12 = SizedBox(width: 12, height: 12);
   static const SizedBox space20 = SizedBox(height: 20);
 }
-
 
 // ============================================================================
 // SHADOWS
@@ -104,7 +115,6 @@ abstract final class AppShadowsExtended {
     offset: Offset(0, 8),
   );
 }
-
 
 // ============================================================================
 // TEXT STYLES
@@ -209,7 +219,6 @@ abstract final class AppTextStylesExtended {
   );
 }
 
-
 // ============================================================================
 // GRADIENTS
 // ============================================================================
@@ -221,7 +230,6 @@ abstract final class AppGradientsExtended {
     colors: [AppColorsExtended.violetBrand, AppColorsExtended.blueBrand],
   );
 }
-
 
 // ============================================================================
 // BOX DECORATIONS
@@ -243,48 +251,55 @@ abstract final class AppDecorations {
         border: Border.all(color: AppColorsExtended.glassBorder),
       );
 
-  static BoxDecoration inputField({bool focused = false, bool hasError = false}) =>
-      BoxDecoration(
-        color: AppColorsExtended.glassFillInput,
-        borderRadius: BorderRadius.circular(AppRadiiExtended.input),
-        border: Border.all(
-          color: hasError
-              ? AppColorsExtended.inputErrorBorder
-              : focused
-                  ? AppColorsExtended.inputFocusedBorder
-                  : AppColorsExtended.glassBorderInput,
-        ),
-      );
+  static BoxDecoration inputField({
+    bool focused = false,
+    bool hasError = false,
+  }) => BoxDecoration(
+    color: AppColorsExtended.glassFillInput,
+    borderRadius: BorderRadius.circular(AppRadiiExtended.input),
+    border: Border.all(
+      color: hasError
+          ? AppColorsExtended.inputErrorBorder
+          : focused
+          ? AppColorsExtended.inputFocusedBorder
+          : AppColorsExtended.glassBorderInput,
+    ),
+  );
 
   static BoxDecoration tileIcon({required Color color, bool active = true}) =>
       BoxDecoration(
-        color: active ? color.withValues(alpha: 0.18) : AppColorsExtended.tileIconBgPrimary,
+        color: active
+            ? color.withValues(alpha: 0.18)
+            : AppColorsExtended.tileIconBgPrimary,
         borderRadius: BorderRadius.circular(AppRadiiExtended.iconContainer),
       );
 
   static BoxDecoration urgentBadge() => BoxDecoration(
-        color: AppColorsExtended.urgentBadgeBg,
-        borderRadius: BorderRadius.circular(AppRadiiExtended.badge),
-      );
+    color: AppColorsExtended.urgentBadgeBg,
+    borderRadius: BorderRadius.circular(AppRadiiExtended.badge),
+  );
 
-  static BoxDecoration toggleCircle({required bool completed, required Color color}) =>
-      BoxDecoration(
-        shape: BoxShape.circle,
-        color: completed ? AppColors.success : Colors.transparent,
-        border: Border.all(
-          color: completed ? AppColors.success : AppColorsExtended.glassBorder,
-          width: 2,
-        ),
-      );
+  static BoxDecoration toggleCircle({
+    required bool completed,
+    required Color color,
+  }) => BoxDecoration(
+    shape: BoxShape.circle,
+    color: completed ? AppColors.success : Colors.transparent,
+    border: Border.all(
+      color: completed ? AppColors.success : AppColorsExtended.glassBorder,
+      width: 2,
+    ),
+  );
 
-  static BoxDecoration requirementIndicator({required bool met, required Color color}) =>
-      BoxDecoration(
-        shape: BoxShape.circle,
-        color: met ? color.withValues(alpha: 0.15) : Colors.transparent,
-        border: Border.all(color: color.withValues(alpha: 0.6)),
-      );
+  static BoxDecoration requirementIndicator({
+    required bool met,
+    required Color color,
+  }) => BoxDecoration(
+    shape: BoxShape.circle,
+    color: met ? color.withValues(alpha: 0.15) : Colors.transparent,
+    border: Border.all(color: color.withValues(alpha: 0.6)),
+  );
 }
-
 
 // ============================================================================
 // BUTTON STYLES
@@ -299,19 +314,18 @@ abstract final class AppButtonStyles {
   static const BorderRadius border = BorderRadius.all(Radius.circular(16));
 
   static BoxDecoration decoration({bool enabled = true}) => BoxDecoration(
-        gradient: enabled ? AppGradientsExtended.brand : null,
-        borderRadius: border,
-        boxShadow: enabled ? const [AppShadowsExtended.button] : null,
-      );
+    gradient: enabled ? AppGradientsExtended.brand : null,
+    borderRadius: border,
+    boxShadow: enabled ? const [AppShadowsExtended.button] : null,
+  );
 
   static TextStyle textStyle({bool enabled = true}) => TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        color: enabled ? AppColors.textPrimary : AppColors.textMuted,
-        letterSpacing: 0.3,
-      );
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: enabled ? AppColors.textPrimary : AppColors.textMuted,
+    letterSpacing: 0.3,
+  );
 }
-
 
 // ============================================================================
 // WIDGET HELPERS
@@ -325,26 +339,22 @@ abstract final class AppWidgets {
     double? right,
     required double size,
     required Color color,
-  }) =>
-      Positioned(
-        top: top,
-        bottom: bottom,
-        left: left,
-        right: right,
-        child: Container(
-          width: size,
-          height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [
-                color.withValues(alpha: 0.35),
-                color.withValues(alpha: 0.0),
-              ],
-            ),
-          ),
+  }) => Positioned(
+    top: top,
+    bottom: bottom,
+    left: left,
+    right: right,
+    child: Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color.withValues(alpha: 0.35), color.withValues(alpha: 0.0)],
         ),
-      );
+      ),
+    ),
+  );
 
   static Widget glassCard({
     Key? key,
@@ -355,21 +365,22 @@ abstract final class AppWidgets {
     Color? fillColor,
     Color? borderColor,
     List<BoxShadow>? boxShadow,
-  }) =>
-      ClipRRect(
-        borderRadius: borderRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: fillColor ?? AppColorsExtended.glassFillLogin,
-              borderRadius: borderRadius,
-              border: Border.all(color: borderColor ?? AppColorsExtended.glassBorderLogin),
-              boxShadow: boxShadow ?? [AppShadowsExtended.card],
-            ),
-            child: child,
+  }) => ClipRRect(
+    borderRadius: borderRadius,
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color: fillColor ?? AppColorsExtended.glassFillLogin,
+          borderRadius: borderRadius,
+          border: Border.all(
+            color: borderColor ?? AppColorsExtended.glassBorderLogin,
           ),
+          boxShadow: boxShadow ?? [AppShadowsExtended.card],
         ),
-      );
+        child: child,
+      ),
+    ),
+  );
 }

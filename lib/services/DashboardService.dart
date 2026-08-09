@@ -72,15 +72,15 @@ class Chore {
   }
 
   Map<String, dynamic> toMap() => {
-        'title': title,
-        if (description != null) 'description': description,
-        'assignedTo': assignedTo,
-        'category': category,
-        'priority': priority,
-        'points': points,
-        'completed': completed,
-        if (dueDate != null) 'dueDate': Timestamp.fromDate(dueDate!),
-      };
+    'title': title,
+    if (description != null) 'description': description,
+    'assignedTo': assignedTo,
+    'category': category,
+    'priority': priority,
+    'points': points,
+    'completed': completed,
+    if (dueDate != null) 'dueDate': Timestamp.fromDate(dueDate!),
+  };
 }
 
 /// Supported values for [Chore.priority].
@@ -212,7 +212,7 @@ class DuesSummary {
 /// `Stream` so the UI can stay live with `StreamBuilder`.
 class DashboardService {
   DashboardService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
 
@@ -221,65 +221,91 @@ class DashboardService {
 
   // ---- Real-time streams ---------------------------------------------------
 
-  /// Real-time stream of **pending** (not yet completed) chores, soonest due
-  /// first. Sorted server-side by `dueDate` only, with the completion filter
-  /// applied in Dart so no composite Firestore index is required.
+  /// Real-time stream of **pending** (not yet completed) chores, sorted
+  /// client-side so that chores without a `dueDate` are not excluded.
+  /// Chores with a due date come first (soonest first), then undated ones.
   Stream<List<Chore>> get pendingChoresStream =>
-      _collection(FirestoreCollections.chores)
-          .orderBy('dueDate', descending: false)
-          .snapshots()
-          .map(
-            (snap) => snap.docs
-                .map(Chore.fromDoc)
-                .where((c) => !c.completed)
-                .take(8)
-                .toList(),
-          );
+      _collection(FirestoreCollections.chores).snapshots().map((snap) {
+        final chores = snap.docs
+            .map(Chore.fromDoc)
+            .where((c) => !c.completed)
+            .toList();
+        chores.sort((a, b) {
+          if (a.dueDate == null && b.dueDate == null) return 0;
+          if (a.dueDate == null) return 1;
+          if (b.dueDate == null) return -1;
+          return a.dueDate!.compareTo(b.dueDate!);
+        });
+        return chores.take(8).toList();
+      });
 
   /// Real-time stream of all chores (used for progress / today calculations).
-  Stream<List<Chore>> get allChoresStream =>
-      _collection(FirestoreCollections.chores)
-          .snapshots()
-          .map((snap) => snap.docs.map(Chore.fromDoc).toList());
+  Stream<List<Chore>> get allChoresStream => _collection(
+    FirestoreCollections.chores,
+  ).snapshots().map((snap) => snap.docs.map(Chore.fromDoc).toList());
 
   /// Real-time stream of household members.
-  Stream<List<Member>> get membersStream =>
-      _collection(FirestoreCollections.members).snapshots().map(
-            (snap) => snap.docs.map(Member.fromDoc).toList(),
-          );
+  Stream<List<Member>> get membersStream => _collection(
+    FirestoreCollections.members,
+  ).snapshots().map((snap) => snap.docs.map(Member.fromDoc).toList());
 
-  /// Real-time stream of recorded payments, newest first.
+  /// Real-time stream of recorded payments, sorted client-side newest first
+  /// so that payments without a `date` field are not excluded from results.
   Stream<List<Payment>> get paymentsStream =>
-      _collection(FirestoreCollections.payments)
-          .orderBy('date', descending: true)
-          .snapshots()
-          .map((snap) => snap.docs.map(Payment.fromDoc).toList());
+      _collection(FirestoreCollections.payments).snapshots().map((snap) {
+        final payments = snap.docs.map(Payment.fromDoc).toList();
+        payments.sort((a, b) {
+          if (a.date == null && b.date == null) return 0;
+          if (a.date == null) return 1;
+          if (b.date == null) return -1;
+          return b.date!.compareTo(a.date!);
+        });
+        return payments;
+      });
 
-  /// Real-time stream of household expenses, newest first.
+  /// Real-time stream of household expenses, sorted client-side newest first
+  /// so that expenses without a `date` field are not excluded from results.
   Stream<List<Expense>> get expensesStream =>
-      _collection(FirestoreCollections.expenses)
-          .orderBy('date', descending: true)
-          .snapshots()
-          .map((snap) => snap.docs.map(Expense.fromDoc).toList());
+      _collection(FirestoreCollections.expenses).snapshots().map((snap) {
+        final expenses = snap.docs.map(Expense.fromDoc).toList();
+        expenses.sort((a, b) {
+          if (a.date == null && b.date == null) return 0;
+          if (a.date == null) return 1;
+          if (b.date == null) return -1;
+          return b.date!.compareTo(a.date!);
+        });
+        return expenses;
+      });
 
   /// Real-time combined dues summary built from the members and payments
   /// streams. Re-emits whenever either collection changes.
+  /// Only payments from the **current calendar month** are counted towards
+  /// `totalPaid` so the "Paid this month" label is accurate.
   Stream<DuesSummary> get duesSummary => combineLatest(
-        membersStream,
-        paymentsStream,
-        (members, payments) {
-          final totalDue = members.fold<double>(
-            0,
-            (acc, m) => acc + m.monthlyDue,
-          );
-          final paid = payments.fold<double>(0, (acc, p) => acc + p.amount);
-          return DuesSummary(
-            totalMonthlyDue: totalDue,
-            totalPaid: paid,
-            paymentCount: payments.length,
-          );
-        },
+    membersStream,
+    paymentsStream,
+    (members, payments) {
+      final now = DateTime.now();
+      final monthStart = DateTime(now.year, now.month, 1);
+      final monthEnd = DateTime(now.year, now.month + 1, 1);
+
+      final thisMonthPayments = payments.where((p) {
+        if (p.date == null) return false;
+        return !p.date!.isBefore(monthStart) && p.date!.isBefore(monthEnd);
+      }).toList();
+
+      final totalDue = members.fold<double>(0, (acc, m) => acc + m.monthlyDue);
+      final paid = thisMonthPayments.fold<double>(
+        0,
+        (acc, p) => acc + p.amount,
       );
+      return DuesSummary(
+        totalMonthlyDue: totalDue,
+        totalPaid: paid,
+        paymentCount: thisMonthPayments.length,
+      );
+    },
+  );
 
   // ---- Chore writes (CRUD) --------------------------------------------------
 
@@ -309,13 +335,17 @@ class DashboardService {
   }
 
   /// Marks a chore done / undone in Firestore (live-syncs to every device).
-  Future<void> setChoreCompleted(String id, bool completed) =>
-      _collection(FirestoreCollections.chores).doc(id).update({
-        'completed': completed,
-      });
+  Future<void> setChoreCompleted(String id, bool completed) => _collection(
+    FirestoreCollections.chores,
+  ).doc(id).update({'completed': completed});
 
-  /// Updates the mutable fields of an existing chore. Only non-`null` values
-  /// are written, so partial updates (e.g. just re-assigning) are safe.
+  /// Updates the mutable fields of an existing chore.
+  ///
+  /// Only non-`null` values are written, so partial updates are safe.
+  ///
+  /// To **remove** an existing due date, pass `clearDueDate: true`.
+  /// Passing a non-null [dueDate] always writes the new timestamp.
+  /// Leaving both at their defaults leaves the existing field unchanged.
   Future<void> updateChore({
     required String id,
     String? title,
@@ -325,15 +355,18 @@ class DashboardService {
     String? priority,
     int? points,
     DateTime? dueDate,
+    bool clearDueDate = false,
   }) async {
     final data = <String, dynamic>{
       if (title != null) 'title': title.trim(),
       if (description != null) 'description': description.trim(),
-      'assignedTo': ?assignedTo,
-      'category': ?category,
-      'priority': ?priority,
-      'points': ?points,
-      if (dueDate != null) 'dueDate': Timestamp.fromDate(dueDate),
+      if (assignedTo != null) 'assignedTo': assignedTo,
+      if (category != null) 'category': category,
+      if (priority != null) 'priority': priority,
+      if (points != null) 'points': points,
+      if (clearDueDate) 'dueDate': FieldValue.delete(),
+      if (!clearDueDate && dueDate != null)
+        'dueDate': Timestamp.fromDate(dueDate),
     };
     if (data.isEmpty) return;
     await _collection(FirestoreCollections.chores).doc(id).update(data);
