@@ -44,7 +44,7 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
                         }
 
                         return ListView.builder(
-                          padding: const EdgeInsets.all(20),
+                          padding: AppPadding.pageHorizontal,
                           itemCount: expenses.length,
                           itemBuilder: (context, i) => _ExpenseCard(
                             expense: expenses[i],
@@ -91,19 +91,19 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
               children: [
                 TextField(
                   controller: titleCtrl,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(labelText: 'Bill Title', labelStyle: TextStyle(color: Colors.white70)),
+                  style: AppTextStyles.body,
+                  decoration: const InputDecoration(labelText: 'Bill Title'),
                 ),
                 TextField(
                   controller: amountCtrl,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(labelText: 'Total Amount', labelStyle: TextStyle(color: Colors.white70)),
+                  style: AppTextStyles.body,
+                  decoration: const InputDecoration(labelText: 'Total Amount'),
                 ),
-                const SizedBox(height: 10),
-                const Align(alignment: Alignment.centerLeft, child: Text('Split Between:', style: TextStyle(color: Colors.white70))),
+                AppPadding.space12,
+                const Align(alignment: Alignment.centerLeft, child: Text('Split Between:', style: AppTextStyles.subtitle)),
                 ...dummyRoommates.map((r) => CheckboxListTile(
-                  title: Text(r['name']!, style: const TextStyle(color: Colors.white)),
+                  title: Text(r['name']!, style: AppTextStyles.body),
                   activeColor: AppColors.primary,
                   value: selectedRoommates.contains(r),
                   onChanged: (val) {
@@ -120,7 +120,7 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel', style: TextStyle(color: Colors.white70))),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel', style: AppTextStyles.subtitle)),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
               onPressed: () {
@@ -133,7 +133,7 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
                   Navigator.pop(ctx);
                 }
               },
-              child: const Text('Calculate & Save', style: TextStyle(color: Colors.white)),
+              child: const Text('Calculate & Save', style: AppTextStyles.button),
             ),
           ],
         ),
@@ -141,15 +141,7 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
     );
   }
 
-  Widget _buildHeader() => Padding(
-    padding: const EdgeInsets.all(20),
-    child: Row(
-      children: [
-        IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back, color: AppColors.icon)),
-        const Text('Expense Splitter', style: AppTextStyles.heading),
-      ],
-    ),
-  );
+  Widget _buildHeader() => AppWidgets.pageHeader(context, 'Expense Splitter');
 }
 
 class _ExpenseCard extends StatelessWidget {
@@ -163,9 +155,9 @@ class _ExpenseCard extends StatelessWidget {
     final breakdown = data['breakdown'] as Map? ?? {};
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: AppPadding.bottom16,
       child: AppWidgets.glassCard(
-        padding: const EdgeInsets.all(16.0),
+        padding: AppPadding.tileInner,
         fillColor: AppColors.glassFillChore,
         borderColor: AppColors.glassBorder,
         boxShadow: const [],
@@ -176,10 +168,10 @@ class _ExpenseCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(data['title'] ?? 'Bill', style: AppTextStyles.heading.copyWith(fontSize: 18)),
-                Text('\$${data['totalAmount']?.toStringAsFixed(2) ?? '0.00'}', style: const TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.bold)),
+                Text('\$${data['totalAmount']?.toStringAsFixed(2) ?? '0.00'}', style: AppTextStyles.activityAmount.copyWith(color: AppColors.primary, fontSize: 18)),
               ],
             ),
-            const Divider(color: Colors.white24, height: 20),
+            const Divider(color: AppColors.divider, height: 20),
             ...breakdown.entries.map((entry) {
               final id = entry.key;
               final personData = entry.value as Map;
@@ -187,7 +179,7 @@ class _ExpenseCard extends StatelessWidget {
               final isPaid = status == 'Paid';
 
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                padding: AppPadding.vertical4,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -195,25 +187,10 @@ class _ExpenseCard extends StatelessWidget {
                     Row(
                       children: [
                         Text('\$${personData['share']}', style: AppTextStyles.body.copyWith(fontSize: 14)),
-                        const SizedBox(width: 12),
+                        AppPadding.space12,
                         GestureDetector(
                           onTap: () => onToggleStatus(id, status),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: isPaid ? AppColors.success.withOpacity(0.2) : Colors.orange.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: isPaid ? AppColors.success : Colors.orange, width: 1),
-                            ),
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                color: isPaid ? AppColors.success : Colors.orange,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
+                          child: AppWidgets.statusTag(isPaid),
                         ),
                       ],
                     ),

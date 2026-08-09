@@ -27,6 +27,7 @@ abstract final class AppColors {
 
   // --- Screen background & gradients -----------------------------------------
   static const background = Color.fromARGB(255, 175, 91, 103);
+  static const surface = background;
   static const gradientStart = Color.fromARGB(255, 127, 127, 128);
   static const gradientEnd = Color.fromARGB(255, 26, 48, 16);
 
@@ -38,7 +39,10 @@ abstract final class AppColors {
   // --- Icon & status -----------------------------------------------------------
   static const icon = Color(0xFF7C8A9F);
   static const success = Color(0xFF5AD1A0);
+  static const warning = Colors.orange;
+  static const info = Color(0xFF3B82F6);
   static const error = Color(0xFFE5484D);
+  static const errorAccent = Colors.redAccent;
   static const errorText = Color(0xFFFF8A8D);
 
   // --- Glass / surface effects ------------------------------------------------
@@ -90,11 +94,13 @@ abstract final class AppGradients {
 abstract final class AppRadii {
   // --- Common radius tokens ---------------------------------------------------
   static const input = 16.0;        // Text inputs & primary buttons
+  static const button = 16.0;
   static const logo = 20.0;         // Logo / brand mark corners
   static const card = 28.0;         // Main card surfaces
   static const badge = 8.0;         // Small badges & pills
   static const chip = 11.0;         // Chips & compact labels
   static const iconContainer = 12.0; // Icon tile containers
+  static const dismissible = 15.0;
 }
 
 abstract final class AppPadding {
@@ -109,15 +115,26 @@ abstract final class AppPadding {
   static const badgePts = EdgeInsets.symmetric(horizontal: 8, vertical: 0);
   static const pageHorizontal = EdgeInsets.symmetric(horizontal: 20);
   static const pageVertical = EdgeInsets.symmetric(vertical: 32);
+  static const header = EdgeInsets.all(20);
+  static const bottom12 = EdgeInsets.only(bottom: 12);
+  static const bottom16 = EdgeInsets.only(bottom: 16);
+  static const vertical4 = EdgeInsets.symmetric(vertical: 4);
+  static const right8 = EdgeInsets.only(right: 8);
 
   // --- Vertical / spacing helpers ----------------------------------------------
   static const space2 = SizedBox(height: 2);
   static const space3 = SizedBox(height: 3);
   static const space4 = SizedBox(height: 4);
   static const space6 = SizedBox(height: 6);
-  static const space8 = SizedBox(width: 8, height: 8);
-  static const space12 = SizedBox(width: 12, height: 12);
+  static const space8 = SizedBox(height: 8);
+  static const space12 = SizedBox(height: 12);
+  static const space16 = SizedBox(height: 16);
   static const space20 = SizedBox(height: 20);
+  static const space24 = SizedBox(height: 24);
+  static const space32 = SizedBox(height: 32);
+  
+  static const width8 = SizedBox(width: 8);
+  static const width12 = SizedBox(width: 12);
 }
 
 abstract final class AppShadows {
@@ -133,6 +150,7 @@ abstract final class AppTextStyles {
   // --- Screen-level text ------------------------------------------------------
   static const heading = TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: -0.5);
   static const subtitle = TextStyle(fontSize: 15, color: AppColors.textSecondary);
+  static const body = TextStyle(fontSize: 14, color: AppColors.textPrimary);
   static const sectionHeader = TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary, letterSpacing: 0.3);
   static const emptyState = TextStyle(fontSize: 14, color: AppColors.textSecondary);
 
@@ -149,6 +167,11 @@ abstract final class AppTextStyles {
   static const requirementMet = TextStyle(fontSize: 12.5, color: AppColors.success, fontWeight: FontWeight.w600);
   static const requirementUnmet = TextStyle(fontSize: 12.5, color: AppColors.textMuted, fontWeight: FontWeight.w400);
 
+  // --- Summary Cards -------------------------------------------------------------
+  static const summaryTitle = TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white);
+  static const summaryValue = TextStyle(fontSize: 28, height: 1.0, fontWeight: FontWeight.w800, letterSpacing: -0.8, color: Colors.white);
+  static const summarySubtitle = TextStyle(fontSize: 12, color: Color(0xD9FFFFFF));
+
   // --- Activity list --------------------------------------------------------------
   static const activityTitle = TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: AppColors.textPrimary);
   static const activitySubtitle = TextStyle(fontSize: 12, color: AppColors.textSecondary);
@@ -159,10 +182,20 @@ abstract final class AppTextStyles {
   static const choreTitleCompleted = TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textMuted, decoration: TextDecoration.lineThrough);
   static const choreSubtitle = TextStyle(fontSize: 12.5, color: AppColors.textSecondary);
   static const choreSubtitleCompleted = TextStyle(fontSize: 12.5, color: AppColors.textMuted);
-  static const chorePoints = TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.success);
-  static const urgentBadge = TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.error);
   static const choreDate = TextStyle(fontSize: 11, color: AppColors.textSecondary);
   static const choreDateCompleted = TextStyle(fontSize: 11, color: AppColors.textMuted);
+
+  static TextStyle statusTag(bool isPaid) => TextStyle(
+        color: isPaid ? AppColors.success : AppColors.warning,
+        fontSize: 12,
+        fontWeight: FontWeight.bold,
+      );
+
+  static TextStyle priorityBadge(bool isUrgent) => TextStyle(
+        color: isUrgent ? AppColors.errorAccent : AppColors.blueBrand,
+        fontWeight: FontWeight.bold,
+        fontSize: 10,
+      );
 }
 
 abstract final class AppDecorations {
@@ -193,9 +226,21 @@ abstract final class AppDecorations {
         color: active ? color.withValues(alpha: 0.18) : AppColors.tileIconBgPrimary,
         borderRadius: BorderRadius.circular(AppRadii.iconContainer),
       );
-  static BoxDecoration urgentBadge() => BoxDecoration(
-        color: AppColors.urgentBadgeBg,
-        borderRadius: BorderRadius.circular(AppRadii.badge),
+
+  static BoxDecoration summaryCard(Gradient gradient) => BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadii.card),
+        gradient: gradient,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x3D000000),
+            blurRadius: 24,
+            offset: Offset(0, 12),
+          ),
+        ],
+      );
+  static BoxDecoration summaryIcon() => BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.18),
+        borderRadius: BorderRadius.circular(10),
       );
 
   // --- Status indicators -------------------------------------------------------------
@@ -209,6 +254,38 @@ abstract final class AppDecorations {
         color: met ? color.withValues(alpha: 0.15) : Colors.transparent,
         border: Border.all(color: color.withValues(alpha: 0.6)),
       );
+
+  static BoxDecoration statusTag(bool isPaid) => BoxDecoration(
+        color: (isPaid ? AppColors.success : AppColors.warning).withOpacity(0.2),
+        borderRadius: BorderRadius.circular(AppRadii.badge),
+        border: Border.all(color: isPaid ? AppColors.success : AppColors.warning, width: 1),
+      );
+
+  static BoxDecoration priorityBadge(bool isUrgent) => BoxDecoration(
+        color: (isUrgent ? AppColors.warning : AppColors.info).withOpacity(0.2),
+        borderRadius: BorderRadius.circular(AppRadii.badge),
+        border: Border.all(color: isUrgent ? AppColors.errorAccent : AppColors.blueBrand, width: 1),
+        boxShadow: isUrgent
+            ? [
+                BoxShadow(
+                  color: AppColors.errorAccent.withOpacity(0.6),
+                  blurRadius: 8,
+                  spreadRadius: 1,
+                )
+              ]
+            : [],
+      );
+
+  static BoxDecoration dismissibleBackground() => BoxDecoration(
+    color: AppColors.error,
+    borderRadius: BorderRadius.circular(AppRadii.dismissible),
+  );
+  
+  static BoxDecoration logoIcon() => BoxDecoration(
+    gradient: AppGradients.brand,
+    borderRadius: BorderRadius.circular(AppRadii.logo),
+    boxShadow: const [AppShadows.logo],
+  );
 }
 
 abstract final class AppButtonStyles {
@@ -273,6 +350,61 @@ abstract final class AppWidgets {
           ),
         ),
       );
+
+  static Widget primaryButton({
+    required String label,
+    required VoidCallback? onTap,
+    bool loading = false,
+    double? width = double.infinity,
+    double height = 54,
+  }) =>
+      SizedBox(
+        width: width,
+        height: height,
+        child: DecoratedBox(
+          decoration: AppButtonStyles.decoration(enabled: onTap != null && !loading),
+          child: InkWell(
+            onTap: loading ? null : onTap,
+            borderRadius: AppButtonStyles.border,
+            child: Center(
+              child: loading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text(label, style: AppButtonStyles.textStyle(enabled: onTap != null)),
+            ),
+          ),
+        ),
+      );
+
+  static Widget pageHeader(BuildContext context, String title) => Padding(
+        padding: AppPadding.header,
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back, color: AppColors.icon),
+            ),
+            Text(title, style: AppTextStyles.heading),
+          ],
+        ),
+      );
+
+  static Widget priorityBadge(String priority) {
+    bool isUrgent = priority == 'Urgent';
+    return Container(
+      padding: AppPadding.badge,
+      decoration: AppDecorations.priorityBadge(isUrgent),
+      child: Text(priority, style: AppTextStyles.priorityBadge(isUrgent)),
+    );
+  }
+
+  static Widget statusTag(bool isPaid) {
+    final status = isPaid ? 'Paid' : 'Pending';
+    return Container(
+      padding: AppPadding.badge,
+      decoration: AppDecorations.statusTag(isPaid),
+      child: Text(status, style: AppTextStyles.statusTag(isPaid)),
+    );
+  }
 }
 
 abstract final class AppTheme {
@@ -289,15 +421,37 @@ abstract final class AppTheme {
           onSurface: AppColors.textPrimary,
         ),
         scaffoldBackgroundColor: AppColors.background,
-        inputDecorationTheme: const InputDecorationTheme(
-          labelStyle: TextStyle(color: AppColors.textSecondary),
-          hintStyle: TextStyle(color: AppColors.textMuted),
+        inputDecorationTheme: InputDecorationTheme(
+          labelStyle: AppTextStyles.inputLabel,
+          hintStyle: AppTextStyles.inputHint,
           errorStyle: AppTextStyles.error,
           filled: true,
-          fillColor: Color(0x0FFFFFFF),
+          fillColor: AppColors.glassFillInput,
+          contentPadding: AppPadding.inputField,
+          prefixIconColor: AppColors.icon,
+          suffixIconColor: AppColors.icon,
+          border: _inputBorder(),
+          enabledBorder: _inputBorder(),
+          focusedBorder: _inputBorder(focused: true),
+          errorBorder: _inputBorder(hasError: true),
+          focusedErrorBorder: _inputBorder(hasError: true, focused: true),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(foregroundColor: AppColors.link),
         ),
       );
+
+  static OutlineInputBorder _inputBorder({bool focused = false, bool hasError = false}) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadii.input),
+      borderSide: BorderSide(
+        color: hasError
+            ? AppColors.errorText
+            : focused
+                ? AppColors.inputFocusedBorder
+                : AppColors.glassBorder,
+        width: focused ? 1.4 : 1,
+      ),
+    );
+  }
 }

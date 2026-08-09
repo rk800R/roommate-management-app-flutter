@@ -52,33 +52,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Container(
                             width: 64, height: 64,
-                            decoration: BoxDecoration(gradient: AppGradients.brand, borderRadius: BorderRadius.circular(AppRadii.logo), boxShadow: [AppShadows.logo]),
+                            decoration: AppDecorations.logoIcon(),
                             child: const Icon(Icons.group_rounded, color: Colors.white, size: 32),
                           ),
-                          const SizedBox(height: 20),
+                          AppPadding.space20,
                           const Text('Welcome Back', style: AppTextStyles.heading),
-                          const SizedBox(height: 8),
+                          AppPadding.space8,
                           const Text('Sign in to your Roommate account', style: AppTextStyles.subtitle),
-                          const SizedBox(height: 32),
+                          AppPadding.space32,
                           AuthTextField(controller: _email, label: 'Email', hint: 'you@example.com', icon: Icons.alternate_email_rounded, validator: AppValidators.email),
-                          const SizedBox(height: 18),
+                          AppPadding.space20,
                           AuthTextField(
                             controller: _pass, label: 'Password', hint: 'Enter password', icon: Icons.lock_outline_rounded, obscureText: _obscure,
                             validator: AppValidators.password,
                             suffixIcon: IconButton(onPressed: () => setState(() => _obscure = !_obscure), icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off, color: AppColors.icon)),
                           ),
-                          const SizedBox(height: 24),
-                          SizedBox(
-                            width: double.infinity, height: 54,
-                            child: DecoratedBox(
-                              decoration: AppButtonStyles.decoration(enabled: !_loading),
-                              child: InkWell(
-                                onTap: _loading ? null : _login,
-                                child: Center(child: _loading ? const CircularProgressIndicator(color: Colors.white) : Text('Sign In', style: AppButtonStyles.textStyle())),
-                              ),
-                            ),
+                          AppPadding.space24,
+                          AppWidgets.primaryButton(
+                            label: 'Sign In',
+                            onTap: _login,
+                            loading: _loading,
                           ),
-                          const SizedBox(height: 20),
+                          AppPadding.space20,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

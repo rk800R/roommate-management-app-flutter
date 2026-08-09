@@ -3,6 +3,7 @@ import '../services/app_service.dart';
 import '../theme/themedata.dart';
 import '../widgets/summary_card.dart';
 import 'ChoreBoardScreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,6 +12,10 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final service = AppService();
     const aptId = 'default_apt'; // Example ID
+ 
+
+final email = FirebaseAuth.instance.currentUser?.email;
+final displayName = email != null ? email.split('@').first : 'User';
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -22,23 +27,23 @@ class HomeScreen extends StatelessWidget {
             AppWidgets.glowOrb(top: -80, right: -140, size: 380, color: AppColors.accentBlue),
             SafeArea(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: AppPadding.pageHorizontal.copyWith(top: 16),
                 children: [
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Welcome back', style: AppTextStyles.heading),
-                            Text('Your apartment at a glance', style: AppTextStyles.subtitle),
+                            Text('Welcome back, ${displayName.toUpperCase()}', style: AppTextStyles.heading),
+                            const Text('Your apartment at a glance', style: AppTextStyles.subtitle),
                           ],
                         ),
                       ),
                       IconButton(onPressed: () => service.signOut(), icon: const Icon(Icons.logout, color: AppColors.icon)),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  AppPadding.space20,
                   StreamBuilder<Map<String, dynamic>>(
                     stream: service.dashboardStream(aptId),
                     builder: (context, snap) {
@@ -52,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                             value: 'PKR ${data['outstanding'] ?? 0}',
                             subtitle: 'Paid ${data['paid'] ?? 0} this month',
                           ),
-                          const SizedBox(height: 16),
+                          AppPadding.space12,
                           Row(
                             children: [
                               Expanded(
@@ -63,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                                   value: '${data['pendingChores'] ?? 0}',
                                 ),
                               ),
-                              const SizedBox(width: 14),
+                              AppPadding.space12,
                               Expanded(
                                 child: SummaryCard(
                                   icon: Icons.savings,
@@ -78,9 +83,9 @@ class HomeScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(height: 32),
+                  AppPadding.space32,
                   const Text('Quick Actions', style: AppTextStyles.sectionHeader),
-                  const SizedBox(height: 12),
+                  AppPadding.space12,
                   _QuickActions(),
                 ],
               ),
@@ -118,7 +123,7 @@ class _ActionItem extends StatelessWidget {
     return Column(
       children: [
         IconButton.filled(onPressed: onTap, icon: Icon(icon), style: IconButton.styleFrom(backgroundColor: AppColors.glassFillInput)),
-        const SizedBox(height: 4),
+        AppPadding.space4,
         Text(label, style: AppTextStyles.activitySubtitle),
       ],
     );

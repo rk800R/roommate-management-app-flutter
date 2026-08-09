@@ -40,33 +40,8 @@ class AuthTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        hintStyle: AppTextStyles.inputHint,
-        labelStyle: AppTextStyles.inputLabel,
-        prefixIcon: Icon(icon, color: AppColors.icon, size: 22),
+        prefixIcon: Icon(icon, size: 22),
         suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: AppColors.glassFillInput,
-        contentPadding: AppPadding.inputField,
-        border: _border(),
-        enabledBorder: _border(),
-        focusedBorder: _border(focused: true),
-        errorBorder: _border(hasError: true),
-        focusedErrorBorder: _border(hasError: true, focused: true),
-        errorStyle: AppTextStyles.error,
-      ),
-    );
-  }
-
-  OutlineInputBorder _border({bool focused = false, bool hasError = false}) {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppRadii.input),
-      borderSide: BorderSide(
-        color: hasError
-            ? AppColors.errorText
-            : focused
-                ? AppColors.inputFocusedBorder
-                : AppColors.glassBorder,
-        width: focused ? 1.4 : 1,
       ),
     );
   }
