@@ -4,6 +4,7 @@ import '../services/AuthService.dart';
 import '../services/DashboardService.dart';
 import '../theme/styling/appstyling.dart';
 import 'ChoreBoardScreen.dart';
+import 'LoginScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -255,7 +256,7 @@ class GlowOrb extends StatelessWidget {
 }
 
 class GlassCard extends StatelessWidget {
-  const AppWidgets.glassCard({super.key, required this.child, this.padding});
+  const GlassCard({super.key, required this.child, this.padding});
 
   final Widget child;
   final EdgeInsetsGeometry? padding;
