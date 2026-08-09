@@ -24,58 +24,51 @@ class _ChoreBoardScreenState extends State<ChoreBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppGradients.background),
-        child: Stack(
+      body: AppWidgets.pageLayout(
+        orbs: [AppWidgets.glowOrb(top: -140, left: -100, size: 360, color: AppColors.violetOrb)],
+        child: Column(
           children: [
-            AppWidgets.glowOrb(top: -140, left: -100, size: 360, color: AppColors.violetOrb),
-            SafeArea(
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  _buildFilters(),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: _crud.getChoresStream(_categoryFilter),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-                        
-                        final chores = snapshot.data!.docs;
-                        // Instantly resort: Incomplete first, then Urgent priority first
-                        chores.sort((a, b) {
-                          final aData = a.data() as Map;
-                          final bData = b.data() as Map;
-                          
-                          int doneCompare = (aData['isDone'] == true ? 1 : 0).compareTo(bData['isDone'] == true ? 1 : 0);
-                          if (doneCompare != 0) return doneCompare;
-                          
-                          return (bData['priority'] == 'Urgent' ? 1 : 0).compareTo(aData['priority'] == 'Urgent' ? 1 : 0);
-                        });
-                        
-                        return ListView.builder(
-                          padding: AppPadding.pageHorizontal,
-                          itemCount: chores.length,
-                          itemBuilder: (context, i) => Dismissible(
-                            key: ValueKey(chores[i].id),
-                            direction: DismissDirection.endToStart,
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              padding: AppPadding.pageHorizontal,
-                              margin: AppPadding.bottom12,
-                              decoration: AppDecorations.dismissibleBackground(),
-                              child: const Icon(Icons.delete, color: Colors.white),
-                            ),
-                            onDismissed: (_) => _crud.deleteChore(chores[i].id),
-                            child: _ChoreTile(
-                              chore: chores[i],
-                              onToggle: (val) => _crud.toggleChoreStatus(chores[i].id, val ?? false),
-                            ),
-                          ),
-                        );
-                      },
+            _buildHeader(),
+            _buildFilters(),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _crud.getChoresStream(_categoryFilter),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+                  
+                  final chores = snapshot.data!.docs;
+                  // Instantly resort: Incomplete first, then Urgent priority first
+                  chores.sort((a, b) {
+                    final aData = a.data() as Map;
+                    final bData = b.data() as Map;
+                    
+                    int doneCompare = (aData['isDone'] == true ? 1 : 0).compareTo(bData['isDone'] == true ? 1 : 0);
+                    if (doneCompare != 0) return doneCompare;
+                    
+                    return (bData['priority'] == 'Urgent' ? 1 : 0).compareTo(aData['priority'] == 'Urgent' ? 1 : 0);
+                  });
+                  
+                  return ListView.builder(
+                    padding: AppPadding.pageHorizontal,
+                    itemCount: chores.length,
+                    itemBuilder: (context, i) => Dismissible(
+                      key: ValueKey(chores[i].id),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: AppPadding.pageHorizontal,
+                        margin: AppPadding.bottom12,
+                        decoration: AppDecorations.dismissibleBackground(),
+                        child: const Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (_) => _crud.deleteChore(chores[i].id),
+                      child: _ChoreTile(
+                        chore: chores[i],
+                        onToggle: (val) => _crud.toggleChoreStatus(chores[i].id, val ?? false),
+                      ),
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],
@@ -163,8 +156,6 @@ class _ChoreBoardScreenState extends State<ChoreBoardScreen> {
         child: ChoiceChip(
           label: Text(c),
           selected: _categoryFilter == c || (_categoryFilter == null && c == 'All'),
-          selectedColor: AppColors.primary,
-          labelStyle: TextStyle(color: (_categoryFilter == c || (_categoryFilter == null && c == 'All')) ? Colors.white : AppColors.icon),
           onSelected: (s) => setState(() => _categoryFilter = c == 'All' ? null : c),
         ),
       )).toList(),
@@ -187,15 +178,11 @@ class _ChoreTile extends StatelessWidget {
       padding: AppPadding.bottom12,
       child: AppWidgets.glassCard(
         padding: AppPadding.tileInner,
-        fillColor: AppColors.glassFillChore,
-        borderColor: AppColors.glassBorder,
-        boxShadow: const [],
         child: Row(
           children: [
             Checkbox(
               value: isDone,
               onChanged: onToggle,
-              activeColor: AppColors.success,
             ),
             Expanded(
               child: Column(

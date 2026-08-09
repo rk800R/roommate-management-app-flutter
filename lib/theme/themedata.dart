@@ -46,18 +46,15 @@ abstract final class AppColors {
   static const errorText = Color(0xFFFF8A8D);
 
   // --- Glass / surface effects ------------------------------------------------
-  static const glassFillLogin = Color(0x0EFFFFFF);
-  static const glassFillChore = Color(0x0DFFFFFF);
+  static const glassFill = Color(0x0DFFFFFF);
   static const glassFillInput = Color(0x0FFFFFFF);
   static const glassBorder = Color(0x1AFFFFFF);
-  static const glassBorderLogin = Color(0x1FFFFFFF);
 
   // --- Focus / selection ------------------------------------------------------
   static const inputFocusedBorder = Color(0xCC7C6BFF);
   static const link = Color(0xFF9B8CFF);
 
   // --- Badge & tile fills ----------------------------------------------------
-  static const tileIconBgPrimary = Color(0x299B4B39);
   static const urgentBadgeBg = Color(0x33E5484D);
 
   // --- Dividers & shadows ------------------------------------------------------
@@ -99,22 +96,17 @@ abstract final class AppRadii {
   static const card = 28.0;         // Main card surfaces
   static const badge = 8.0;         // Small badges & pills
   static const chip = 11.0;         // Chips & compact labels
-  static const iconContainer = 12.0; // Icon tile containers
   static const dismissible = 15.0;
 }
 
 abstract final class AppPadding {
   // --- Content padding ---------------------------------------------------------
-  static const card = EdgeInsets.all(20);
   static const cardLogin = EdgeInsets.all(28);
   static const inputHorizontal = EdgeInsets.symmetric(horizontal: 16);
   static const inputField = EdgeInsets.symmetric(horizontal: 16, vertical: 18);
-  static const tile = EdgeInsets.symmetric(horizontal: 16, vertical: 13);
   static const tileInner = EdgeInsets.all(14);
   static const badge = EdgeInsets.symmetric(horizontal: 8, vertical: 2);
-  static const badgePts = EdgeInsets.symmetric(horizontal: 8, vertical: 0);
   static const pageHorizontal = EdgeInsets.symmetric(horizontal: 20);
-  static const pageVertical = EdgeInsets.symmetric(vertical: 32);
   static const header = EdgeInsets.all(20);
   static const bottom12 = EdgeInsets.only(bottom: 12);
   static const bottom16 = EdgeInsets.only(bottom: 16);
@@ -163,10 +155,6 @@ abstract final class AppTextStyles {
   static const inputHint = TextStyle(fontSize: 14, color: AppColors.textMuted);
   static const error = TextStyle(fontSize: 12, color: AppColors.errorText);
 
-  // --- Requirements --------------------------------------------------------------
-  static const requirementMet = TextStyle(fontSize: 12.5, color: AppColors.success, fontWeight: FontWeight.w600);
-  static const requirementUnmet = TextStyle(fontSize: 12.5, color: AppColors.textMuted, fontWeight: FontWeight.w400);
-
   // --- Summary Cards -------------------------------------------------------------
   static const summaryTitle = TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white);
   static const summaryValue = TextStyle(fontSize: 28, height: 1.0, fontWeight: FontWeight.w800, letterSpacing: -0.8, color: Colors.white);
@@ -200,16 +188,11 @@ abstract final class AppTextStyles {
 
 abstract final class AppDecorations {
   // --- Glass surfaces -----------------------------------------------------------
-  static BoxDecoration glassCardLogin({EdgeInsetsGeometry? padding}) => BoxDecoration(
-        color: AppColors.glassFillLogin,
-        borderRadius: BorderRadius.circular(AppRadii.card),
-        border: Border.all(color: AppColors.glassBorderLogin),
-        boxShadow: const [AppShadows.card],
-      );
-  static BoxDecoration glassCardChore({EdgeInsetsGeometry? padding}) => BoxDecoration(
-        color: AppColors.glassFillChore,
+  static BoxDecoration glassCard({bool hasShadow = false}) => BoxDecoration(
+        color: AppColors.glassFill,
         borderRadius: BorderRadius.circular(AppRadii.card),
         border: Border.all(color: AppColors.glassBorder),
+        boxShadow: hasShadow ? const [AppShadows.card] : null,
       );
 
   // --- Form fields ---------------------------------------------------------------
@@ -219,12 +202,6 @@ abstract final class AppDecorations {
         border: Border.all(
           color: hasError ? AppColors.errorText : focused ? AppColors.inputFocusedBorder : AppColors.glassBorder,
         ),
-      );
-
-  // --- Tiles & badges ---------------------------------------------------------------
-  static BoxDecoration tileIcon({required Color color, bool active = true}) => BoxDecoration(
-        color: active ? color.withValues(alpha: 0.18) : AppColors.tileIconBgPrimary,
-        borderRadius: BorderRadius.circular(AppRadii.iconContainer),
       );
 
   static BoxDecoration summaryCard(Gradient gradient) => BoxDecoration(
@@ -241,18 +218,6 @@ abstract final class AppDecorations {
   static BoxDecoration summaryIcon() => BoxDecoration(
         color: Colors.white.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(10),
-      );
-
-  // --- Status indicators -------------------------------------------------------------
-  static BoxDecoration toggleCircle({required bool completed, required Color color}) => BoxDecoration(
-        shape: BoxShape.circle,
-        color: completed ? AppColors.success : Colors.transparent,
-        border: Border.all(color: completed ? AppColors.success : AppColors.glassBorder, width: 2),
-      );
-  static BoxDecoration requirementIndicator({required bool met, required Color color}) => BoxDecoration(
-        shape: BoxShape.circle,
-        color: met ? color.withValues(alpha: 0.15) : Colors.transparent,
-        border: Border.all(color: color.withValues(alpha: 0.6)),
       );
 
   static BoxDecoration statusTag(bool isPaid) => BoxDecoration(
@@ -328,28 +293,30 @@ abstract final class AppWidgets {
     Key? key,
     required Widget child,
     EdgeInsetsGeometry? padding,
-    BorderRadius borderRadius = const BorderRadius.all(Radius.circular(AppRadii.card)),
+    BorderRadius? borderRadius,
     double blurSigma = 16,
     Color? fillColor,
     Color? borderColor,
     List<BoxShadow>? boxShadow,
-  }) =>
-      ClipRRect(
-        borderRadius: borderRadius,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: fillColor ?? AppColors.glassFillLogin,
-              borderRadius: borderRadius,
-              border: Border.all(color: borderColor ?? AppColors.glassBorderLogin),
-              boxShadow: boxShadow ?? const [AppShadows.card],
-            ),
-            child: child,
+  }) {
+    final radius = borderRadius ?? BorderRadius.circular(AppRadii.card);
+    return ClipRRect(
+      borderRadius: radius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        child: Container(
+          padding: padding,
+          decoration: BoxDecoration(
+            color: fillColor ?? AppColors.glassFill,
+            borderRadius: radius,
+            border: Border.all(color: borderColor ?? AppColors.glassBorder),
+            boxShadow: boxShadow,
           ),
+          child: child,
         ),
-      );
+      ),
+    );
+  }
 
   static Widget primaryButton({
     required String label,
@@ -405,6 +372,16 @@ abstract final class AppWidgets {
       child: Text(status, style: AppTextStyles.statusTag(isPaid)),
     );
   }
+
+  static Widget pageLayout({required Widget child, List<Widget>? orbs}) => Container(
+        decoration: const BoxDecoration(gradient: AppGradients.background),
+        child: Stack(
+          children: [
+            if (orbs != null) ...orbs,
+            SafeArea(child: child),
+          ],
+        ),
+      );
 }
 
 abstract final class AppTheme {
@@ -438,6 +415,37 @@ abstract final class AppTheme {
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(foregroundColor: AppColors.link),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            textStyle: AppTextStyles.button,
+            padding: AppButtonStyles.padding,
+            shape: RoundedRectangleBorder(borderRadius: AppButtonStyles.border),
+          ),
+        ),
+        chipTheme: ChipThemeData(
+          backgroundColor: Colors.transparent,
+          selectedColor: AppColors.primary,
+          secondarySelectedColor: AppColors.primary,
+          labelStyle: const TextStyle(color: AppColors.icon),
+          secondaryLabelStyle: const TextStyle(color: Colors.white),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.chip)),
+          side: const BorderSide(color: AppColors.glassBorder),
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) return AppColors.success;
+            return null;
+          }),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        ),
+        dialogTheme: DialogThemeData(
+          backgroundColor: AppColors.background,
+          titleTextStyle: AppTextStyles.heading.copyWith(fontSize: 22),
+          contentTextStyle: AppTextStyles.body,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.card)),
         ),
       );
 

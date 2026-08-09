@@ -23,39 +23,32 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppGradients.background),
-        child: Stack(
+      body: AppWidgets.pageLayout(
+        orbs: [AppWidgets.glowOrb(top: -140, right: -100, size: 360, color: AppColors.violetOrb)],
+        child: Column(
           children: [
-            AppWidgets.glowOrb(top: -140, right: -100, size: 360, color: AppColors.violetOrb),
-            SafeArea(
-              child: Column(
-                children: [
-                  _buildHeader(),
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: _crud.getExpensesStream(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-                        final expenses = snapshot.data!.docs;
-                        
-                        if (expenses.isEmpty) {
-                          return const Center(child: Text('No expenses logged yet.', style: AppTextStyles.body));
-                        }
+            _buildHeader(),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _crud.getExpensesStream(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+                  final expenses = snapshot.data!.docs;
+                  
+                  if (expenses.isEmpty) {
+                    return const Center(child: Text('No expenses logged yet.', style: AppTextStyles.body));
+                  }
 
-                        return ListView.builder(
-                          padding: AppPadding.pageHorizontal,
-                          itemCount: expenses.length,
-                          itemBuilder: (context, i) => _ExpenseCard(
-                            expense: expenses[i],
-                            onToggleStatus: (roommateId, status) =>
-                                _crud.toggleSettlementStatus(expenses[i].id, roommateId, status),
-                          ),
-                        );
-                      },
+                  return ListView.builder(
+                    padding: AppPadding.pageHorizontal,
+                    itemCount: expenses.length,
+                    itemBuilder: (context, i) => _ExpenseCard(
+                      expense: expenses[i],
+                      onToggleStatus: (roommateId, status) =>
+                          _crud.toggleSettlementStatus(expenses[i].id, roommateId, status),
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],
@@ -83,28 +76,24 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          title: const Text('New Shared Bill', style: AppTextStyles.heading),
+          title: const Text('New Shared Bill'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: titleCtrl,
-                  style: AppTextStyles.body,
                   decoration: const InputDecoration(labelText: 'Bill Title'),
                 ),
                 TextField(
                   controller: amountCtrl,
                   keyboardType: TextInputType.number,
-                  style: AppTextStyles.body,
                   decoration: const InputDecoration(labelText: 'Total Amount'),
                 ),
                 AppPadding.space12,
                 const Align(alignment: Alignment.centerLeft, child: Text('Split Between:', style: AppTextStyles.subtitle)),
                 ...dummyRoommates.map((r) => CheckboxListTile(
-                  title: Text(r['name']!, style: AppTextStyles.body),
-                  activeColor: AppColors.primary,
+                  title: Text(r['name']!),
                   value: selectedRoommates.contains(r),
                   onChanged: (val) {
                     setState(() {
@@ -120,9 +109,8 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
             ),
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel', style: AppTextStyles.subtitle)),
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
               onPressed: () {
                 if (amountCtrl.text.isNotEmpty && selectedRoommates.isNotEmpty) {
                   _crud.addExpense(
@@ -133,7 +121,7 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
                   Navigator.pop(ctx);
                 }
               },
-              child: const Text('Calculate & Save', style: AppTextStyles.button),
+              child: const Text('Calculate & Save'),
             ),
           ],
         ),
@@ -158,9 +146,6 @@ class _ExpenseCard extends StatelessWidget {
       padding: AppPadding.bottom16,
       child: AppWidgets.glassCard(
         padding: AppPadding.tileInner,
-        fillColor: AppColors.glassFillChore,
-        borderColor: AppColors.glassBorder,
-        boxShadow: const [],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

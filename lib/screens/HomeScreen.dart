@@ -11,85 +11,76 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final service = AppService();
-    const aptId = 'default_apt'; // Example ID
- 
-
-final email = FirebaseAuth.instance.currentUser?.email;
-final displayName = email != null ? email.split('@').first : 'User';
+    const aptId = 'default_apt';
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppGradients.background),
-        child: Stack(
+      body: AppWidgets.pageLayout(
+        orbs: [
+          AppWidgets.glowOrb(top: -160, left: -120, size: 420, color: AppColors.violetOrb),
+          AppWidgets.glowOrb(top: -80, right: -140, size: 380, color: AppColors.accentBlue),
+        ],
+        child: ListView(
+          padding: AppPadding.pageHorizontal.copyWith(top: 16),
           children: [
-            AppWidgets.glowOrb(top: -160, left: -120, size: 420, color: AppColors.violetOrb),
-            AppWidgets.glowOrb(top: -80, right: -140, size: 380, color: AppColors.accentBlue),
-            SafeArea(
-              child: ListView(
-                padding: AppPadding.pageHorizontal.copyWith(top: 16),
-                children: [
-                  Row(
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Welcome back, ${displayName.toUpperCase()}', style: AppTextStyles.heading),
-                            const Text('Your apartment at a glance', style: AppTextStyles.subtitle),
-                          ],
-                        ),
-                      ),
-                      IconButton(onPressed: () => service.signOut(), icon: const Icon(Icons.logout, color: AppColors.icon)),
+                      Text('Welcome back, ${service.displayName}', style: AppTextStyles.heading),
+                      const Text('Your apartment at a glance', style: AppTextStyles.subtitle),
                     ],
                   ),
-                  AppPadding.space20,
-                  StreamBuilder<Map<String, dynamic>>(
-                    stream: service.dashboardStream(aptId),
-                    builder: (context, snap) {
-                      final data = snap.data ?? {};
-                      return Column(
-                        children: [
-                          SummaryCard(
-                            icon: Icons.payments,
-                            gradient: AppGradients.brand,
-                            title: 'Dues Outstanding',
-                            value: 'PKR ${data['outstanding'] ?? 0}',
-                            subtitle: 'Paid ${data['paid'] ?? 0} this month',
-                          ),
-                          AppPadding.space12,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SummaryCard(
-                                  icon: Icons.checklist,
-                                  gradient: AppGradients.brand,
-                                  title: 'Pending Chores',
-                                  value: '${data['pendingChores'] ?? 0}',
-                                ),
-                              ),
-                              AppPadding.space12,
-                              Expanded(
-                                child: SummaryCard(
-                                  icon: Icons.savings,
-                                  gradient: AppGradients.brandWarm,
-                                  title: 'Savings',
-                                  value: 'PKR ${data['savings'] ?? 0}',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                  AppPadding.space32,
-                  const Text('Quick Actions', style: AppTextStyles.sectionHeader),
-                  AppPadding.space12,
-                  _QuickActions(),
-                ],
-              ),
+                ),
+                IconButton(onPressed: () => service.signOut(), icon: const Icon(Icons.logout, color: AppColors.icon)),
+              ],
             ),
+            AppPadding.space20,
+            StreamBuilder<Map<String, dynamic>>(
+              stream: service.dashboardStream(aptId),
+              builder: (context, snap) {
+                final data = snap.data ?? {};
+                return Column(
+                  children: [
+                    SummaryCard(
+                      icon: Icons.payments,
+                      gradient: AppGradients.brand,
+                      title: 'Dues Outstanding',
+                      value: 'PKR ${data['outstanding'] ?? 0}',
+                      subtitle: 'Paid ${data['paid'] ?? 0} this month',
+                    ),
+                    AppPadding.space12,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SummaryCard(
+                            icon: Icons.checklist,
+                            gradient: AppGradients.brand,
+                            title: 'Pending Chores',
+                            value: '${data['pendingChores'] ?? 0}',
+                          ),
+                        ),
+                        AppPadding.space12,
+                        Expanded(
+                          child: SummaryCard(
+                            icon: Icons.savings,
+                            gradient: AppGradients.brandWarm,
+                            title: 'Savings',
+                            value: 'PKR ${data['savings'] ?? 0}',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
+            AppPadding.space32,
+            const Text('Quick Actions', style: AppTextStyles.sectionHeader),
+            AppPadding.space12,
+            _QuickActions(),
           ],
         ),
       ),

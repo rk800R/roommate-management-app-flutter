@@ -20,18 +20,8 @@ class SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadii.card),
-        gradient: gradient,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x3D000000),
-            blurRadius: 24,
-            offset: Offset(0, 12),
-          ),
-        ],
-      ),
+      padding: AppPadding.tileInner,
+      decoration: AppDecorations.summaryCard(gradient),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,48 +30,29 @@ class SummaryCard extends StatelessWidget {
               Container(
                 width: 34,
                 height: 34,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.18),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: AppDecorations.summaryIcon(),
                 child: Icon(icon, size: 19, color: Colors.white),
               ),
-              const SizedBox(width: 10),
+              AppPadding.space8,
               Expanded(
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
+                child: Text(title, style: AppTextStyles.summaryTitle),
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          AppPadding.space12,
           Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 28,
-              height: 1.0,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.8,
-              color: Colors.white,
-            ),
+            style: AppTextStyles.summaryValue,
           ),
           if (subtitle != null) ...[
-            const SizedBox(height: 6),
+            AppPadding.space6,
             Text(
               subtitle!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.85),
-              ),
+              style: AppTextStyles.summarySubtitle,
             ),
           ],
         ],
