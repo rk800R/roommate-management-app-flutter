@@ -3,11 +3,11 @@ import '../services/app_service.dart';
 import '../theme/themedata.dart';
 import '../widgets/summary_card.dart';
 import 'ChoreBoardScreen.dart';
+import 'ExpenseSplitterScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final service = AppService();
@@ -96,7 +96,14 @@ class _QuickActions extends StatelessWidget {
       children: [
         _ActionItem(icon: Icons.add_task, label: 'Add Chore', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChoreBoardScreen()))),
         _ActionItem(icon: Icons.payment, label: 'Pay Dues', onTap: () {}),
-        _ActionItem(icon: Icons.receipt, label: 'Expense', onTap: () {}),
+        _ActionItem(
+          icon: Icons.receipt,
+          label: 'Expense',
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ExpenseSplitterScreen()),
+          ),
+        ),
         _ActionItem(icon: Icons.people, label: 'Members', onTap: () {}),
       ],
     );
