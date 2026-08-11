@@ -27,20 +27,29 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
         orbs: [AppWidgets.glowOrb(top: -140, right: -100, size: 360, color: AppColors.violetOrb)],
         child: Column(
           children: [
-            _buildHeader(),
+            AppWidgets.pageHeader(context, 'Expense Splitter', showBack: false),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _crud.getExpensesStream(),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-                  final expenses = snapshot.data!.docs;
-                  
-                  if (expenses.isEmpty) {
-                    return const Center(child: Text('No expenses logged yet.', style: AppTextStyles.body));
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-
+                  final expenses = snapshot.data!.docs;
+                  if (expenses.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.receipt_long_rounded, size: 64, color: AppColors.icon),
+                          AppPadding.space12,
+                          Text('No expenses logged yet', style: AppTextStyles.emptyState),
+                        ],
+                      ),
+                    );
+                  }
                   return ListView.builder(
-                    padding: AppPadding.pageHorizontal,
+                    padding: AppPadding.pageList,
                     itemCount: expenses.length,
                     itemBuilder: (context, i) => _ExpenseCard(
                       expense: expenses[i],
@@ -91,20 +100,31 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
                   decoration: const InputDecoration(labelText: 'Total Amount'),
                 ),
                 AppPadding.space12,
-                const Align(alignment: Alignment.centerLeft, child: Text('Split Between:', style: AppTextStyles.subtitle)),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Split Between:', style: AppTextStyles.subtitle),
+                ),
                 ...dummyRoommates.map((r) => CheckboxListTile(
-                  title: Text(r['name']!),
-                  value: selectedRoommates.contains(r),
-                  onChanged: (val) {
-                    setState(() {
-                      if (val == true) {
-                        selectedRoommates.add(r);
-                      } else {
-                        selectedRoommates.remove(r);
-                      }
-                    });
-                  },
-                )),
+                      title: Text(r['name']!),
+                      value: selectedRoommates.contains(r),
+                      onChanged: (val) {
+                        setState(() {
+                          if (val == true) {
+                            selectedRoommates.add(r);
+                          } else {
+                            selectedRoommates.remove(r);
+                          }
+                        });
+                      },
+                    )),
+                if (selectedRoommates.isNotEmpty && amountCtrl.text.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'Each pays: PKR ${(double.tryParse(amountCtrl.text) ?? 0) / selectedRoommates.length}',
+                      style: AppTextStyles.activityAmount,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -128,8 +148,6 @@ class _ExpenseSplitterScreenState extends State<ExpenseSplitterScreen> {
       ),
     );
   }
-
-  Widget _buildHeader() => AppWidgets.pageHeader(context, 'Expense Splitter');
 }
 
 class _ExpenseCard extends StatelessWidget {
@@ -152,11 +170,16 @@ class _ExpenseCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(data['title'] ?? 'Bill', style: AppTextStyles.heading.copyWith(fontSize: 18)),
-                Text('\$${data['totalAmount']?.toStringAsFixed(2) ?? '0.00'}', style: AppTextStyles.activityAmount.copyWith(color: AppColors.primary, fontSize: 18)),
+                Text(data['title'] ?? 'Bill',
+                    style: AppTextStyles.heading.copyWith(fontSize: 18)),
+                Text(
+                  '\$${data['totalAmount']?.toStringAsFixed(2) ?? '0.00'}',
+                  style: AppTextStyles.activityAmount
+                      .copyWith(color: AppColors.primary, fontSize: 18),
+                ),
               ],
             ),
-            const Divider(color: AppColors.divider, height: 20),
+            Divider(color: AppColors.divider, height: 20),
             ...breakdown.entries.map((entry) {
               final id = entry.key;
               final personData = entry.value as Map;
@@ -171,7 +194,8 @@ class _ExpenseCard extends StatelessWidget {
                     Text(personData['name'] ?? 'Unknown', style: AppTextStyles.body),
                     Row(
                       children: [
-                        Text('\$${personData['share']}', style: AppTextStyles.body.copyWith(fontSize: 14)),
+                        Text('\$${personData['share']}',
+                            style: AppTextStyles.body.copyWith(fontSize: 14)),
                         AppPadding.space12,
                         GestureDetector(
                           onTap: () => onToggleStatus(id, status),

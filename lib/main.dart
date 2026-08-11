@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'providers/theme_provider.dart';
 import 'services/AuthWrapper.dart';
 import 'theme/themedata.dart';
 
@@ -13,14 +15,24 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Roommate',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      home: const AuthWrapper(),
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          // Sync the global isDark flag whenever the provider notifies
+          AppColors.isDark = themeProvider.isDark;
+          return MaterialApp(
+            title: 'RoomieSync',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: themeProvider.themeMode,
+            home: const AuthWrapper(),
+          );
+        },
+      ),
     );
   }
 }

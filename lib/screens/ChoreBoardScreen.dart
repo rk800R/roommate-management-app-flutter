@@ -28,28 +28,42 @@ class _ChoreBoardScreenState extends State<ChoreBoardScreen> {
         orbs: [AppWidgets.glowOrb(top: -140, left: -100, size: 360, color: AppColors.violetOrb)],
         child: Column(
           children: [
-            _buildHeader(),
+            AppWidgets.pageHeader(context, 'Chore Board', showBack: false),
             _buildFilters(),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: _crud.getChoresStream(_categoryFilter),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-                  
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   final chores = snapshot.data!.docs;
-                  // Instantly resort: Incomplete first, then Urgent priority first
+                  if (chores.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.checklist_rounded, size: 64, color: AppColors.icon),
+                          AppPadding.space12,
+                          Text('No chores yet', style: AppTextStyles.emptyState),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // Sort: incomplete first, then urgent first
                   chores.sort((a, b) {
                     final aData = a.data() as Map;
                     final bData = b.data() as Map;
-                    
-                    int doneCompare = (aData['isDone'] == true ? 1 : 0).compareTo(bData['isDone'] == true ? 1 : 0);
+                    int doneCompare = (aData['isDone'] == true ? 1 : 0)
+                        .compareTo(bData['isDone'] == true ? 1 : 0);
                     if (doneCompare != 0) return doneCompare;
-                    
-                    return (bData['priority'] == 'Urgent' ? 1 : 0).compareTo(aData['priority'] == 'Urgent' ? 1 : 0);
+                    return (bData['priority'] == 'Urgent' ? 1 : 0)
+                        .compareTo(aData['priority'] == 'Urgent' ? 1 : 0);
                   });
-                  
+
                   return ListView.builder(
-                    padding: AppPadding.pageHorizontal,
+                    padding: AppPadding.pageList,
                     itemCount: chores.length,
                     itemBuilder: (context, i) => Dismissible(
                       key: ValueKey(chores[i].id),
@@ -64,7 +78,8 @@ class _ChoreBoardScreenState extends State<ChoreBoardScreen> {
                       onDismissed: (_) => _crud.deleteChore(chores[i].id),
                       child: _ChoreTile(
                         chore: chores[i],
-                        onToggle: (val) => _crud.toggleChoreStatus(chores[i].id, val ?? false),
+                        onToggle: (val) =>
+                            _crud.toggleChoreStatus(chores[i].id, val ?? false),
                       ),
                     ),
                   );
@@ -145,22 +160,24 @@ class _ChoreBoardScreenState extends State<ChoreBoardScreen> {
     );
   }
 
-  Widget _buildHeader() => AppWidgets.pageHeader(context, 'Chore Board');
-
   Widget _buildFilters() => SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    padding: AppPadding.pageHorizontal,
-    child: Row(
-      children: ['All', 'Kitchen', 'Cleaning', 'Groceries'].map((c) => Padding(
-        padding: AppPadding.right8,
-        child: ChoiceChip(
-          label: Text(c),
-          selected: _categoryFilter == c || (_categoryFilter == null && c == 'All'),
-          onSelected: (s) => setState(() => _categoryFilter = c == 'All' ? null : c),
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+        child: Row(
+          children: ['All', 'Kitchen', 'Cleaning', 'Groceries']
+              .map((c) => Padding(
+                    padding: AppPadding.right8,
+                    child: ChoiceChip(
+                      label: Text(c),
+                      selected: _categoryFilter == c ||
+                          (_categoryFilter == null && c == 'All'),
+                      onSelected: (s) =>
+                          setState(() => _categoryFilter = c == 'All' ? null : c),
+                    ),
+                  ))
+              .toList(),
         ),
-      )).toList(),
-    ),
-  );
+      );
 }
 
 class _ChoreTile extends StatelessWidget {
@@ -180,17 +197,21 @@ class _ChoreTile extends StatelessWidget {
         padding: AppPadding.tileInner,
         child: Row(
           children: [
-            Checkbox(
-              value: isDone,
-              onChanged: onToggle,
-            ),
+            Checkbox(value: isDone, onChanged: onToggle),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(data['title'] ?? 'Untitled', style: isDone ? AppTextStyles.choreTitleCompleted : AppTextStyles.choreTitle),
-                  if (data['assignedTo'] != null && data['assignedTo'].toString().isNotEmpty)
-                    Text('Assigned to: ${data['assignedTo']}', style: AppTextStyles.choreSubtitle),
+                  Text(
+                    data['title'] ?? 'Untitled',
+                    style: isDone ? AppTextStyles.choreTitleCompleted : AppTextStyles.choreTitle,
+                  ),
+                  if (data['assignedTo'] != null &&
+                      data['assignedTo'].toString().isNotEmpty)
+                    Text(
+                      'Assigned to: ${data['assignedTo']}',
+                      style: AppTextStyles.choreSubtitle,
+                    ),
                 ],
               ),
             ),
