@@ -22,12 +22,14 @@ class ChoreCrud {
   Future<void> addChore({
     required String title,
     required String assignedTo,
+    String? assignedToId,
     required String category,
     String priority = 'Normal',
   }) {
     return _choresRef.add({
       'title': title,
       'assignedTo': assignedTo,
+      'assignedToId': assignedToId ?? '',
       'category': category,
       'priority': priority,
       'isDone': false,
@@ -41,11 +43,6 @@ class ChoreCrud {
       'isDone': isDone,
       'completedAt': isDone ? FieldValue.serverTimestamp() : null,
     });
-  }
-
-  // UPDATE (Edit)
-  Future<void> updateChore(String choreId, Map<String, dynamic> data) {
-    return _choresRef.doc(choreId).update(data);
   }
 
   // DELETE

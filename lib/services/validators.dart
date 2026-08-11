@@ -18,10 +18,4 @@ abstract final class AppValidators {
     }
     return null;
   }
-
-  /// Display name validator — min 2 characters.
-  static String? name(String? v) {
-    if (v == null || v.trim().isEmpty) return 'Name is required';
-    return v.trim().length >= 2 ? null : 'Min 2 characters';
-  }
 }

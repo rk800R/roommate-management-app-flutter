@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/theme_provider.dart';
-import 'services/AuthWrapper.dart';
+import 'services/auth_wrapper.dart';
 import 'theme/themedata.dart';
 
 void main() async {

@@ -11,37 +11,36 @@ abstract final class AppColors {
   static bool isDark = true;
 
   // --- Brand & Accent (constant across themes) -------------------------------
-  static const primary = Color(0xFFDA4B39);
-  static const accentBlue = Color(0xFFDFB33B);
-  static const violetBrand = Color(0xFF7C6BFF);
-  static const blueBrand = Color(0xFF3B82F6);
-  static const violetOrb = Color(0xFF6D5DF6);
+  static const primary = Color(0xFFFF6B4A);
+  static const accentBlue = Color(0xFFF2B84B);
+  static const violetBrand = Color(0xFF7D6BFF);
+  static const blueBrand = Color(0xFF4FA3FF);
+  static const violetOrb = Color(0xFF7D6BFF);
 
   // --- Screen background & gradients (theme-dependent) -----------------------
-  static const _darkBg = Color.fromARGB(255, 175, 91, 103);
-  static const _lightBg = Color(0xFFF3F2EE);
+  static const _darkBg = Color(0xFF11151F);
+  static const _lightBg = Color(0xFFF7F5F0);
   static Color get background => isDark ? _darkBg : _lightBg;
-  static Color get surface => background;
-  static Color get gradientStart => isDark
-      ? const Color.fromARGB(255, 127, 127, 128)
-      : const Color(0xFFE8E6DF);
-  static Color get gradientEnd => isDark
-      ? const Color.fromARGB(255, 26, 48, 16)
-      : const Color(0xFFDDD9CE);
+  static Color get surface =>
+      isDark ? const Color(0xFF171D29) : const Color(0xFFFFFFFF);
+  static Color get gradientStart =>
+      isDark ? const Color(0xFF182033) : const Color(0xFFFFFBF4);
+  static Color get gradientEnd =>
+      isDark ? const Color(0xFF0E1118) : const Color(0xFFEDE8DD);
 
   // --- Text (theme-dependent) ------------------------------------------------
   static Color get textPrimary =>
-      isDark ? Colors.white : const Color(0xFF1C1C1E);
+      isDark ? const Color(0xFFF6F8FB) : const Color(0xFF20242D);
   static Color get textSecondary =>
-      isDark ? const Color(0xFF9AA3B5) : const Color(0xFF6C6C70);
+      isDark ? const Color(0xFFB2BAC8) : const Color(0xFF626873);
   static Color get textMuted =>
-      isDark ? const Color(0xFF6B7489) : const Color(0xFF9A9AA0);
+      isDark ? const Color(0xFF778195) : const Color(0xFF8E929B);
 
   // --- Icon & status ---------------------------------------------------------
   static Color get icon =>
-      isDark ? const Color(0xFF7C8A9F) : const Color(0xFF5A5A60);
-  static const success = Color(0xFF5AD1A0);
-  static const warning = Colors.orange;
+      isDark ? const Color(0xFFA7B0C1) : const Color(0xFF5D6470);
+  static const success = Color(0xFF42C897);
+  static const warning = Color(0xFFF0A83A);
   static const info = Color(0xFF3B82F6);
   static const error = Color(0xFFE5484D);
   static const errorAccent = Colors.redAccent;
@@ -49,59 +48,65 @@ abstract final class AppColors {
 
   // --- Glass / surface effects (theme-dependent) -----------------------------
   static Color get glassFill =>
-      isDark ? const Color(0x0DFFFFFF) : const Color(0x0D000000);
+      isDark ? const Color(0x1FFFFFFF) : const Color(0xF7FFFFFF);
   static Color get glassFillInput =>
-      isDark ? const Color(0x0FFFFFFF) : const Color(0x0F000000);
+      isDark ? const Color(0x29FFFFFF) : const Color(0xFFFFFFFF);
   static Color get glassBorder =>
-      isDark ? const Color(0x1AFFFFFF) : const Color(0x1A000000);
+      isDark ? const Color(0x24FFFFFF) : const Color(0x1A20242D);
 
   // --- Focus / selection -----------------------------------------------------
-  static const inputFocusedBorder = Color(0xCC7C6BFF);
-  static const link = Color(0xFF9B8CFF);
+  static const inputFocusedBorder = Color(0xCCFF6B4A);
+  static const link = Color(0xFFFF8A68);
 
   // --- Badge & tile fills ----------------------------------------------------
   static const urgentBadgeBg = Color(0x33E5484D);
 
   // --- Dividers & shadows ----------------------------------------------------
   static Color get divider =>
-      isDark ? const Color(0x12FFFFFF) : const Color(0x12000000);
-  static const shadowBlack35 = Color(0x59330000);
-  static const shadowBrand45 = Color(0x737C6BFF);
-  static const shadowButton = Color(0x667C6BFF);
+      isDark ? const Color(0x1FFFFFFF) : const Color(0x1A20242D);
+  static const shadowBlack35 = Color(0x40000000);
+  static const shadowBrand45 = Color(0x66FF6B4A);
+  static const shadowButton = Color(0x4DFF6B4A);
 }
 
 abstract final class AppGradients {
   /// Full-screen background gradient — theme-dependent.
   static LinearGradient get background => LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [AppColors.gradientStart, AppColors.background, AppColors.gradientEnd],
-        stops: const [0.0, 0.55, 1.0],
-      );
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      AppColors.gradientStart,
+      AppColors.background,
+      AppColors.gradientEnd,
+    ],
+    stops: const [0.0, 0.55, 1.0],
+  );
 
   /// Default brand gradient (violet → blue) — constant.
   static const brand = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [AppColors.violetBrand, AppColors.blueBrand],
+    colors: [AppColors.primary, AppColors.accentBlue],
   );
 
   /// Warm brand gradient (primary red → gold) — constant.
   static const brandWarm = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [AppColors.primary, AppColors.accentBlue],
+    colors: [AppColors.violetBrand, AppColors.blueBrand],
   );
 }
 
 abstract final class AppRadii {
-  static const input = 16.0;
-  static const button = 16.0;
-  static const logo = 20.0;
-  static const card = 28.0;
+  static const input = 8.0;
+  static const button = 8.0;
+  static const logo = 12.0;
+  static const tile = 8.0;
+  static const bubble = 14.0;
+  static const card = 8.0;
   static const badge = 8.0;
-  static const chip = 11.0;
-  static const dismissible = 15.0;
+  static const chip = 8.0;
+  static const dismissible = 8.0;
 }
 
 abstract final class AppPadding {
@@ -115,7 +120,18 @@ abstract final class AppPadding {
   static const header = EdgeInsets.fromLTRB(4, 8, 16, 12);
   static const bottom12 = EdgeInsets.only(bottom: 12);
   static const bottom16 = EdgeInsets.only(bottom: 16);
+  static const bubbleItem = EdgeInsets.only(bottom: 10);
+  static const messageBubble = EdgeInsets.symmetric(
+    horizontal: 14,
+    vertical: 10,
+  );
+  static const composer = EdgeInsets.fromLTRB(12, 4, 12, 8);
+  static const composerInner = EdgeInsets.symmetric(
+    horizontal: 12,
+    vertical: 6,
+  );
   static const vertical4 = EdgeInsets.symmetric(vertical: 4);
+  static const top8 = EdgeInsets.only(top: 8);
   static const right8 = EdgeInsets.only(right: 8);
   static const space2 = SizedBox(height: 2);
   static const space3 = SizedBox(height: 3);
@@ -133,113 +149,229 @@ abstract final class AppPadding {
 }
 
 abstract final class AppShadows {
-  static const card = BoxShadow(color: AppColors.shadowBlack35, blurRadius: 40, offset: Offset(0, 20));
-  static const button = BoxShadow(color: AppColors.shadowButton, blurRadius: 20, offset: Offset(0, 8));
-  static const logo = BoxShadow(color: AppColors.shadowBrand45, blurRadius: 24, offset: Offset(0, 8));
+  static const card = BoxShadow(
+    color: AppColors.shadowBlack35,
+    blurRadius: 24,
+    offset: Offset(0, 14),
+  );
+  static const button = BoxShadow(
+    color: AppColors.shadowButton,
+    blurRadius: 16,
+    offset: Offset(0, 8),
+  );
+  static const logo = BoxShadow(
+    color: AppColors.shadowBrand45,
+    blurRadius: 18,
+    offset: Offset(0, 8),
+  );
 }
 
 abstract final class AppTextStyles {
   // --- Screen-level text (theme-dependent → getters) -------------------------
-  static TextStyle get heading => TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: -0.5);
-  static TextStyle get subtitle => TextStyle(fontSize: 15, color: AppColors.textSecondary);
-  static TextStyle get body => TextStyle(fontSize: 14, color: AppColors.textPrimary);
-  static TextStyle get sectionHeader => TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary, letterSpacing: 0.3);
-  static TextStyle get emptyState => TextStyle(fontSize: 14, color: AppColors.textSecondary);
+  static TextStyle get heading => TextStyle(
+    fontSize: 28,
+    height: 1.08,
+    fontWeight: FontWeight.w800,
+    color: AppColors.textPrimary,
+  );
+  static TextStyle get subtitle =>
+      TextStyle(fontSize: 15, height: 1.35, color: AppColors.textSecondary);
+  static TextStyle get body =>
+      TextStyle(fontSize: 14, height: 1.35, color: AppColors.textPrimary);
+  static TextStyle get sectionHeader => TextStyle(
+    fontSize: 13,
+    height: 1.2,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+  );
+  static TextStyle get emptyState =>
+      TextStyle(fontSize: 15, height: 1.35, color: AppColors.textSecondary);
 
   // --- Interactive / actions -------------------------------------------------
-  static TextStyle get button => TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary, letterSpacing: 0.3);
-  static const link = TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.link);
+  static const button = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+  static const link = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.link,
+  );
 
   // --- Form fields -----------------------------------------------------------
-  static TextStyle get inputLabel => TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary);
-  static TextStyle get inputHint => TextStyle(fontSize: 14, color: AppColors.textMuted);
+  static TextStyle get inputLabel => TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textPrimary,
+  );
+  static TextStyle get inputHint =>
+      TextStyle(fontSize: 14, color: AppColors.textMuted);
   static const error = TextStyle(fontSize: 12, color: AppColors.errorText);
 
   // --- Summary Cards (always white text on gradient) -------------------------
-  static const summaryTitle = TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.white);
-  static const summaryValue = TextStyle(fontSize: 28, height: 1.0, fontWeight: FontWeight.w800, letterSpacing: -0.8, color: Colors.white);
-  static const summarySubtitle = TextStyle(fontSize: 12, color: Color(0xD9FFFFFF));
+  static const summaryTitle = TextStyle(
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
+    color: Colors.white,
+  );
+  static const summaryValue = TextStyle(
+    fontSize: 27,
+    height: 1.0,
+    fontWeight: FontWeight.w800,
+    color: Colors.white,
+  );
+  static const summarySubtitle = TextStyle(
+    fontSize: 12,
+    color: Color(0xD9FFFFFF),
+  );
 
   // --- Activity list ---------------------------------------------------------
-  static TextStyle get activityTitle => TextStyle(fontSize: 14.5, fontWeight: FontWeight.w600, color: AppColors.textPrimary);
-  static TextStyle get activitySubtitle => TextStyle(fontSize: 12, color: AppColors.textSecondary);
-  static TextStyle get activityAmount => TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary);
+  static TextStyle get activityTitle => TextStyle(
+    fontSize: 14.5,
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+  );
+  static TextStyle get activitySubtitle =>
+      TextStyle(fontSize: 12, color: AppColors.textSecondary);
+  static TextStyle get activityAmount => TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+  );
 
   // --- Chore list ------------------------------------------------------------
-  static TextStyle get choreTitle => TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textPrimary);
-  static TextStyle get choreTitleCompleted => TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.textMuted, decoration: TextDecoration.lineThrough);
-  static TextStyle get choreSubtitle => TextStyle(fontSize: 12.5, color: AppColors.textSecondary);
-  static TextStyle get choreSubtitleCompleted => TextStyle(fontSize: 12.5, color: AppColors.textMuted);
-  static TextStyle get choreDate => TextStyle(fontSize: 11, color: AppColors.textSecondary);
-  static TextStyle get choreDateCompleted => TextStyle(fontSize: 11, color: AppColors.textMuted);
+  static TextStyle get choreTitle => TextStyle(
+    fontSize: 15,
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textPrimary,
+  );
+  static TextStyle get choreTitleCompleted => TextStyle(
+    fontSize: 15,
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+    color: AppColors.textMuted,
+    decoration: TextDecoration.lineThrough,
+  );
+  static TextStyle get choreSubtitle =>
+      TextStyle(fontSize: 12.5, color: AppColors.textSecondary);
+  static TextStyle get choreDate =>
+      TextStyle(fontSize: 11, color: AppColors.textSecondary);
+
+  // --- Avatars & mini badges ---------------------------------------------------
+  static TextStyle avatarInitial(
+    double fontSize, {
+    FontWeight fontWeight = FontWeight.w700,
+  }) => TextStyle(
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    color: Colors.white,
+  );
+  static const smallBadge = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.bold,
+    color: AppColors.success,
+  );
 
   static TextStyle statusTag(bool isPaid) => TextStyle(
-        color: isPaid ? AppColors.success : AppColors.warning,
-        fontSize: 12,
-        fontWeight: FontWeight.bold,
-      );
+    color: isPaid ? AppColors.success : AppColors.warning,
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+  );
 
   static TextStyle priorityBadge(bool isUrgent) => TextStyle(
-        color: isUrgent ? AppColors.errorAccent : AppColors.blueBrand,
-        fontWeight: FontWeight.bold,
-        fontSize: 10,
-      );
+    color: isUrgent ? AppColors.errorAccent : AppColors.blueBrand,
+    fontWeight: FontWeight.bold,
+    fontSize: 10,
+  );
 }
 
 abstract final class AppDecorations {
-  static BoxDecoration glassCard({bool hasShadow = false}) => BoxDecoration(
-        color: AppColors.glassFill,
-        borderRadius: BorderRadius.circular(AppRadii.card),
-        border: Border.all(color: AppColors.glassBorder),
-        boxShadow: hasShadow ? const [AppShadows.card] : null,
-      );
+  static BoxDecoration actionTile() => BoxDecoration(
+    color: AppColors.glassFillInput,
+    borderRadius: BorderRadius.circular(AppRadii.tile),
+    border: Border.all(color: AppColors.glassBorder),
+    boxShadow: AppColors.isDark ? null : const [AppShadows.card],
+  );
 
-  static BoxDecoration inputField({bool focused = false, bool hasError = false}) => BoxDecoration(
-        color: AppColors.glassFillInput,
-        borderRadius: BorderRadius.circular(AppRadii.input),
-        border: Border.all(
-          color: hasError ? AppColors.errorText : focused ? AppColors.inputFocusedBorder : AppColors.glassBorder,
-        ),
-      );
+  static BoxDecoration messageBubble({required bool isMine}) => BoxDecoration(
+    gradient: isMine ? AppGradients.brand : null,
+    color: isMine ? null : AppColors.glassFillInput,
+    borderRadius: BorderRadius.only(
+      topLeft: const Radius.circular(AppRadii.bubble),
+      topRight: const Radius.circular(AppRadii.bubble),
+      bottomLeft: Radius.circular(isMine ? AppRadii.bubble : 4),
+      bottomRight: Radius.circular(isMine ? 4 : AppRadii.bubble),
+    ),
+    border: isMine ? null : Border.all(color: AppColors.glassBorder),
+  );
+
+  static BoxDecoration inputField({
+    bool focused = false,
+    bool hasError = false,
+  }) => BoxDecoration(
+    color: AppColors.glassFillInput,
+    borderRadius: BorderRadius.circular(AppRadii.input),
+    border: Border.all(
+      color: hasError
+          ? AppColors.errorText
+          : focused
+          ? AppColors.inputFocusedBorder
+          : AppColors.glassBorder,
+    ),
+  );
 
   static BoxDecoration summaryCard(Gradient gradient) => BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadii.card),
-        gradient: gradient,
-        boxShadow: const [
-          BoxShadow(color: Color(0x3D000000), blurRadius: 24, offset: Offset(0, 12)),
-        ],
-      );
+    borderRadius: BorderRadius.circular(AppRadii.card),
+    gradient: gradient,
+    boxShadow: const [
+      BoxShadow(
+        color: Color(0x33000000),
+        blurRadius: 18,
+        offset: Offset(0, 10),
+      ),
+    ],
+  );
 
   static BoxDecoration summaryIcon() => BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
-        borderRadius: BorderRadius.circular(10),
-      );
+    color: Colors.white.withValues(alpha: 0.18),
+    borderRadius: BorderRadius.circular(10),
+  );
 
   static BoxDecoration statusTag(bool isPaid) => BoxDecoration(
-        color: (isPaid ? AppColors.success : AppColors.warning).withOpacity(0.2),
-        borderRadius: BorderRadius.circular(AppRadii.badge),
-        border: Border.all(color: isPaid ? AppColors.success : AppColors.warning, width: 1),
-      );
+    color: (isPaid ? AppColors.success : AppColors.warning).withValues(
+      alpha: 0.2,
+    ),
+    borderRadius: BorderRadius.circular(AppRadii.badge),
+    border: Border.all(
+      color: isPaid ? AppColors.success : AppColors.warning,
+      width: 1,
+    ),
+  );
 
   static BoxDecoration priorityBadge(bool isUrgent) => BoxDecoration(
-        color: (isUrgent ? AppColors.warning : AppColors.info).withOpacity(0.2),
-        borderRadius: BorderRadius.circular(AppRadii.badge),
-        border: Border.all(color: isUrgent ? AppColors.errorAccent : AppColors.blueBrand, width: 1),
-        boxShadow: isUrgent
-            ? [BoxShadow(color: AppColors.errorAccent.withOpacity(0.6), blurRadius: 8, spreadRadius: 1)]
-            : [],
-      );
+    color: (isUrgent ? AppColors.warning : AppColors.info).withValues(
+      alpha: 0.2,
+    ),
+    borderRadius: BorderRadius.circular(AppRadii.badge),
+    border: Border.all(
+      color: isUrgent ? AppColors.errorAccent : AppColors.blueBrand,
+      width: 1,
+    ),
+  );
 
   static BoxDecoration dismissibleBackground() => BoxDecoration(
-        color: AppColors.error,
-        borderRadius: BorderRadius.circular(AppRadii.dismissible),
-      );
+    color: AppColors.error,
+    borderRadius: BorderRadius.circular(AppRadii.dismissible),
+  );
 
   static BoxDecoration logoIcon() => BoxDecoration(
-        gradient: AppGradients.brand,
-        borderRadius: BorderRadius.circular(AppRadii.logo),
-        boxShadow: const [AppShadows.logo],
-      );
+    gradient: AppGradients.brand,
+    borderRadius: BorderRadius.circular(AppRadii.logo),
+    boxShadow: const [AppShadows.logo],
+  );
 }
 
 abstract final class AppButtonStyles {
@@ -247,36 +379,70 @@ abstract final class AppButtonStyles {
   static const border = BorderRadius.all(Radius.circular(AppRadii.input));
 
   static BoxDecoration decoration({bool enabled = true}) => BoxDecoration(
-        gradient: enabled ? AppGradients.brand : null,
-        borderRadius: border,
-        boxShadow: enabled ? const [AppShadows.button] : null,
-      );
+    gradient: enabled ? AppGradients.brand : null,
+    borderRadius: border,
+    boxShadow: enabled ? const [AppShadows.button] : null,
+  );
 
   static TextStyle textStyle({bool enabled = true}) => TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w700,
-        color: enabled ? AppColors.textPrimary : AppColors.textMuted,
-        letterSpacing: 0.3,
-      );
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: enabled ? Colors.white : AppColors.textMuted,
+  );
 }
 
 abstract final class AppWidgets {
   static Widget glowOrb({
-    double? top, double? bottom, double? left, double? right,
-    required double size, required Color color,
-  }) =>
-      Positioned(
-        top: top, bottom: bottom, left: left, right: right,
-        child: Container(
-          width: size, height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [color.withValues(alpha: 0.35), color.withValues(alpha: 0.0)],
-            ),
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
+    required double size,
+    required Color color,
+  }) => Positioned(
+    top: top,
+    bottom: bottom,
+    left: left,
+    right: right,
+    child: IgnorePointer(
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: RadialGradient(
+            colors: [
+              color.withValues(alpha: 0.14),
+              color.withValues(alpha: 0.0),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
+
+  static Widget userAvatar({
+    required String initial,
+    double size = 48,
+    double? fontSize,
+    List<BoxShadow>? boxShadow,
+    Border? border,
+  }) => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      gradient: AppGradients.brand,
+      shape: BoxShape.circle,
+      boxShadow: boxShadow,
+      border: border,
+    ),
+    child: Center(
+      child: Text(
+        initial.isNotEmpty ? initial[0].toUpperCase() : '?',
+        style: AppTextStyles.avatarInitial(fontSize ?? size * 0.42),
+      ),
+    ),
+  );
 
   static Widget glassCard({
     Key? key,
@@ -299,7 +465,9 @@ abstract final class AppWidgets {
             color: fillColor ?? AppColors.glassFill,
             borderRadius: radius,
             border: Border.all(color: borderColor ?? AppColors.glassBorder),
-            boxShadow: boxShadow,
+            boxShadow:
+                boxShadow ??
+                (AppColors.isDark ? null : const [AppShadows.card]),
           ),
           child: child,
         ),
@@ -313,38 +481,56 @@ abstract final class AppWidgets {
     bool loading = false,
     double? width = double.infinity,
     double height = 54,
-  }) =>
-      SizedBox(
-        width: width,
-        height: height,
-        child: DecoratedBox(
-          decoration: AppButtonStyles.decoration(enabled: onTap != null && !loading),
-          child: InkWell(
-            onTap: loading ? null : onTap,
-            borderRadius: AppButtonStyles.border,
-            child: Center(
-              child: loading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : Text(label, style: AppButtonStyles.textStyle(enabled: onTap != null)),
-            ),
+  }) => SizedBox(
+    width: width,
+    height: height,
+    child: Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: AppButtonStyles.decoration(
+          enabled: onTap != null && !loading,
+        ),
+        child: InkWell(
+          onTap: loading ? null : onTap,
+          borderRadius: AppButtonStyles.border,
+          child: Center(
+            child: loading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : Text(
+                    label,
+                    style: AppButtonStyles.textStyle(enabled: onTap != null),
+                  ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   /// Page header with optional back button (hidden in bottom-nav tabs).
-  static Widget pageHeader(BuildContext context, String title, {bool showBack = true}) => Padding(
-        padding: AppPadding.header,
-        child: Row(
-          children: [
-            if (showBack)
-              IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.arrow_back, color: AppColors.icon),
-              ),
-            Text(title, style: AppTextStyles.heading),
-          ],
+  static Widget pageHeader(
+    BuildContext context,
+    String title, {
+    bool showBack = true,
+  }) => Padding(
+    padding: AppPadding.header,
+    child: Row(
+      children: [
+        if (showBack)
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back, color: AppColors.icon),
+          ),
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.heading,
+          ),
         ),
-      );
+      ],
+    ),
+  );
 
   static Widget priorityBadge(String priority) {
     bool isUrgent = priority == 'Urgent';
@@ -364,7 +550,8 @@ abstract final class AppWidgets {
     );
   }
 
-  static Widget pageLayout({required Widget child, List<Widget>? orbs}) => Container(
+  static Widget pageLayout({required Widget child, List<Widget>? orbs}) =>
+      Container(
         decoration: BoxDecoration(gradient: AppGradients.background),
         child: Stack(
           children: [
@@ -380,18 +567,17 @@ abstract final class AppTheme {
   static ThemeData get light => _buildTheme(brightness: Brightness.light);
 
   static ThemeData _buildTheme({required Brightness brightness}) {
-    final isDark = brightness == Brightness.dark;
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
       colorScheme: ColorScheme(
         primary: AppColors.primary,
         secondary: AppColors.accentBlue,
-        surface: AppColors.background,
+        surface: AppColors.surface,
         error: AppColors.error,
-        onPrimary: AppColors.textPrimary,
+        onPrimary: Colors.white,
         onSurface: AppColors.textPrimary,
-        onSecondary: AppColors.textPrimary,
+        onSecondary: Colors.white,
         onError: Colors.white,
         brightness: brightness,
       ),
@@ -424,12 +610,14 @@ abstract final class AppTheme {
         ),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.glassFillInput,
         selectedColor: AppColors.primary,
         secondarySelectedColor: AppColors.primary,
         labelStyle: TextStyle(color: AppColors.icon),
         secondaryLabelStyle: const TextStyle(color: Colors.white),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.chip)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.chip),
+        ),
         side: BorderSide(color: AppColors.glassBorder),
       ),
       checkboxTheme: CheckboxThemeData(
@@ -440,31 +628,39 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surface,
         titleTextStyle: AppTextStyles.heading.copyWith(fontSize: 22),
         contentTextStyle: AppTextStyles.body,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadii.card)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadii.card),
+        ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppColors.surface,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.icon,
         type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        selectedLabelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
         unselectedLabelStyle: const TextStyle(fontSize: 12),
       ),
     );
   }
 
-  static OutlineInputBorder _inputBorder({bool focused = false, bool hasError = false}) {
+  static OutlineInputBorder _inputBorder({
+    bool focused = false,
+    bool hasError = false,
+  }) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(AppRadii.input),
       borderSide: BorderSide(
         color: hasError
             ? AppColors.errorText
             : focused
-                ? AppColors.inputFocusedBorder
-                : AppColors.glassBorder,
+            ? AppColors.inputFocusedBorder
+            : AppColors.glassBorder,
         width: focused ? 1.4 : 1,
       ),
     );

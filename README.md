@@ -17,17 +17,24 @@ A few resources to get you started if this is your first Flutter project:
 
 ## Firestore data model
 
-The dashboard (`lib/services/DashboardService.dart`) reads four top-level
-collections and rebuilds in real time whenever they change. Create them in
-the Firebase console (`internship-2026-roommate-app`) and seed a few docs —
-empty collections show friendly empty states, so the app runs either way.
+Data lives on the authenticated `users/{uid}` docs and under
+`apartments/{aptId}/…` subcollections (`aptId` defaults to `default_apt`).
+All streams rebuild in real time, so changes appear instantly. Empty
+collections show friendly empty states, so the app runs either way.
 
 | Collection | Fields | Used for |
 |------------|--------|----------|
-| `members`  | `name` (string), `monthlyDue` (number), `colorSeed` (int, optional) | Total monthly dues + "paid" progress |
-| `payments` | `memberId`, `memberName`, `amount` (number), `date` (timestamp), `note` (optional) | Amount already paid this period |
-| `chores`   | `title`, `assignedTo`, `category`, `completed` (bool), `dueDate` (timestamp), `points` (int, optional), `description` (optional) | Pending-chores count, today's progress, upcoming list |
-| `expenses` | `title`, `amount` (number), `paidBy`, `category`, `date` (timestamp) | Recent-activity feed |
+| `users/{uid}` | `email`, `displayName`, `apartmentId`, `createdAt` | Auth profiles, the apartment's **member list**, and the task-assignee dropdown |
+| `apartments/{aptId}/chores` | `title`, `assignedTo`, `assignedToId`, `category`, `priority`, `isDone`, `createdAt` | Chore board + dashboard |
+| `apartments/{aptId}/expenses` | `title`, `totalAmount`, `splitCount`, `breakdown` (map), `createdAt` | Expense splitter + dashboard |
+| `apartments/{aptId}/notices` | `title`, `content`, `author`, `authorId`, `createdAt` | Notice board |
+| `apartments/{aptId}/chatrooms/{roomId}` | `name`, `isDefault`, `lastMessage`, `lastMessageAt`, `createdAt` | Chatroom list |
+| `…/chatrooms/{roomId}/messages` | `text`, `senderName`, `senderId`, `createdAt` | Chat thread |
+
+Members are the real Firestore users whose `users/{uid}.apartmentId` matches the
+current apartment — so a task can only be assigned to a member that actually
+exists in Firebase. A built-in "General" chatroom is auto-created on first
+launch.
 
 Dues logic: `remaining = Σ monthlyDue − Σ payments.amount`, with `progress =
 paid / total`. Currency formatting lives in `AppCurrency` in

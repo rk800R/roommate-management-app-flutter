@@ -28,12 +28,20 @@ class SummaryCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 34, height: 34,
+                width: 34,
+                height: 34,
                 decoration: AppDecorations.summaryIcon(),
                 child: Icon(icon, size: 19, color: Colors.white),
               ),
-              AppPadding.space8,
-              Expanded(child: Text(title, style: AppTextStyles.summaryTitle)),
+              AppPadding.width8,
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.summaryTitle,
+                ),
+              ),
             ],
           ),
           AppPadding.space12,
