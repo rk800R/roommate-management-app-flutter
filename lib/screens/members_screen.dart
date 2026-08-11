@@ -94,7 +94,7 @@ class MembersScreen extends StatelessWidget {
                           padding: AppPadding.tileInner,
                           child: Row(
                             children: [
-                              AppWidgets.userAvatar(initial: name, size: 48),
+                              AppWidgets.userAvatar(initial: name, size: AppRadii.avatarDefault),
                               AppPadding.width14,
                               Expanded(
                                 child: Column(

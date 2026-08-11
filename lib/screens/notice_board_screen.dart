@@ -203,7 +203,7 @@ class _NoticeCard extends StatelessWidget {
             // Author + timestamp
             Row(
               children: [
-                AppWidgets.userAvatar(initial: author, size: 22, fontSize: 11),
+                AppWidgets.userAvatar(initial: author, size: AppRadii.avatarSmall, fontSize: 11),
                 AppPadding.width8,
                 Text(author, style: AppTextStyles.activitySubtitle),
                 const Spacer(),

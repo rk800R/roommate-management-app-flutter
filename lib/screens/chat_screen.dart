@@ -101,13 +101,13 @@ class _ChatScreenState extends State<ChatScreen> {
                           child: ListTile(
                             contentPadding: EdgeInsets.zero,
                             leading: Container(
-                              width: 44, height: 44,
+                              width: AppRadii.chatroomIconContainerSize, height: AppRadii.chatroomIconContainerSize,
                               decoration: AppDecorations.summaryIcon(),
                               child: Icon(
                                 (data['isDefault'] == true)
                                     ? Icons.campaign_rounded
                                     : Icons.forum_rounded,
-                                size: 22, color: Colors.white,
+                                size: AppRadii.chatroomIconSize, color: Colors.white,
                               ),
                             ),
                             title: Text(

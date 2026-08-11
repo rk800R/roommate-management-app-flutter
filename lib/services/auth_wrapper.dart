@@ -21,7 +21,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   void initState() {
     super.initState();
     // Show splash for 2 seconds, then reveal auth state
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(AppDurations.splashDelay, () {
       if (mounted) setState(() => _showSplash = false);
     });
   }
@@ -67,7 +67,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 backgroundColor: AppColors.background,
                 body: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(24),
+                    padding: AppPadding.pageHorizontal,
                     child: Text(
                       'Could not load your Firebase profile. ${profileSnapshot.error}',
                       style: AppTextStyles.subtitle,

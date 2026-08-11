@@ -107,6 +107,24 @@ abstract final class AppRadii {
   static const badge = 8.0;
   static const chip = 8.0;
   static const dismissible = 8.0;
+
+  // --- Component Sizes ---
+  static const actionItemHeight = 62.0;
+  static const actionIconSize = 26.0;
+  static const splashIconSize = 48.0;
+  static const splashIconContainerSize = 96.0;
+  static const avatarTiny = 30.0;
+  static const avatarSmall = 22.0;
+  static const avatarDefault = 48.0;
+  static const avatarLarge = 96.0;
+  static const logoSmall = 32.0;
+  static const logoSmallContainer = 64.0;
+
+  static const chatroomIconSize = 22.0;
+  static const chatroomIconContainerSize = 44.0;
+
+  static const summaryIconSize = 19.0;
+  static const summaryIconContainerSize = 34.0;
 }
 
 abstract final class AppPadding {
@@ -146,6 +164,12 @@ abstract final class AppPadding {
   static const width8 = SizedBox(width: 8);
   static const width12 = SizedBox(width: 12);
   static const width14 = SizedBox(width: 14);
+
+  // --- Shared Layouts ---
+  static const actionGap = 16.0;
+  static const actionIconGap = 10.0;
+  static const messageAvatarGap = 8.0;
+  static const rowGap = 16.0;
 }
 
 abstract final class AppShadows {
@@ -286,6 +310,9 @@ abstract final class AppTextStyles {
     fontWeight: FontWeight.bold,
     fontSize: 10,
   );
+
+  // --- Special Screen styles ---
+  static TextStyle get splashTitle => heading.copyWith(fontSize: 34);
 }
 
 abstract final class AppDecorations {
@@ -372,6 +399,20 @@ abstract final class AppDecorations {
     borderRadius: BorderRadius.circular(AppRadii.logo),
     boxShadow: const [AppShadows.logo],
   );
+
+  static BoxDecoration logoIconSmall() => BoxDecoration(
+    gradient: AppGradients.brand,
+    borderRadius: BorderRadius.circular(AppRadii.logo),
+    boxShadow: const [AppShadows.logo],
+  );
+}
+
+abstract final class AppDurations {
+  static const splash = Duration(milliseconds: 1400);
+  static const splashDelay = Duration(seconds: 2);
+  static const authToggle = Duration(milliseconds: 300);
+  static const authExpand = Duration(milliseconds: 250);
+  static const fast = Duration(milliseconds: 200);
 }
 
 abstract final class AppButtonStyles {

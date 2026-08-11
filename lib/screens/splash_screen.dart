@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: AppDurations.splash,
     );
     _scale = Tween(begin: 0.6, end: 1.0).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeOutBack),
@@ -62,14 +62,14 @@ class _SplashScreenState extends State<SplashScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 96, height: 96,
+                        width: AppRadii.splashIconContainerSize, height: AppRadii.splashIconContainerSize,
                         decoration: AppDecorations.logoIcon(),
-                        child: const Icon(Icons.group_rounded, color: Colors.white, size: 48),
+                        child: const Icon(Icons.group_rounded, color: Colors.white, size: AppRadii.splashIconSize),
                       ),
                       const SizedBox(height: 24),
                       Text(
                         'RoomieSync',
-                        style: AppTextStyles.heading.copyWith(fontSize: 34),
+                        style: AppTextStyles.splashTitle,
                       ),
                       const SizedBox(height: 8),
                       Text(

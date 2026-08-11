@@ -98,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
                       Center(
                         child: AppWidgets.userAvatar(
                           initial: initial,
-                          size: 96,
+                          size: AppRadii.avatarLarge,
                           fontSize: 42,
                           boxShadow: const [AppShadows.logo],
                         ),

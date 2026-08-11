@@ -28,10 +28,10 @@ class SummaryCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: AppRadii.summaryIconContainerSize,
+                height: AppRadii.summaryIconContainerSize,
                 decoration: AppDecorations.summaryIcon(),
-                child: Icon(icon, size: 19, color: Colors.white),
+                child: Icon(icon, size: AppRadii.summaryIconSize, color: Colors.white),
               ),
               AppPadding.width8,
               Expanded(

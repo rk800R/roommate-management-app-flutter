@@ -149,7 +149,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         decoration: InputDecoration(
                           hintText: 'Type a message…',
                           border: InputBorder.none,
-                          hintStyle: TextStyle(color: AppColors.textMuted),
+                          hintStyle: AppTextStyles.inputHint,
                         ),
                         onSubmitted: (_) => _send(),
                       ),
@@ -222,8 +222,8 @@ class _MessageBubble extends StatelessWidget {
             : [
                 // Tiny sender initial avatar
                 Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: AppWidgets.userAvatar(initial: sender, size: 30),
+                  padding: const EdgeInsets.only(right: AppPadding.messageAvatarGap),
+                  child: AppWidgets.userAvatar(initial: sender, size: AppRadii.avatarTiny),
                 ),
                 bubble,
               ],

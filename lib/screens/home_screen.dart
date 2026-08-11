@@ -62,7 +62,7 @@ class HomeScreen extends StatelessWidget {
       );
       rows.add(
         Padding(
-          padding: EdgeInsets.only(bottom: i + 3 < actions.length ? 16 : 0),
+          padding: AppPadding.bottom16,
           child: Row(
             children: [
               for (int j = 0; j < chunk.length; j++) ...[
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                     onTap: () => _open(context, chunk[j].screen),
                   ),
                 ),
-                if (j < chunk.length - 1) const SizedBox(width: 16),
+                if (j < chunk.length - 1) const SizedBox(width: AppPadding.rowGap),
               ],
             ],
           ),
@@ -246,11 +246,11 @@ class _ActionItem extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            height: 62,
+            height: AppRadii.actionItemHeight,
             decoration: AppDecorations.actionTile(),
-            child: Icon(icon, color: AppColors.textPrimary, size: 26),
+            child: Icon(icon, color: AppColors.textPrimary, size: AppRadii.actionIconSize),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppPadding.actionIconGap),
           Text(
             label,
             maxLines: 1,

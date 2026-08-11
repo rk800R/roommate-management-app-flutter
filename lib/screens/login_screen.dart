@@ -73,13 +73,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 64, height: 64,
+                      width: AppRadii.logoSmallContainer, height: AppRadii.logoSmallContainer,
                       decoration: AppDecorations.logoIcon(),
-                      child: const Icon(Icons.group_rounded, color: Colors.white, size: 32),
+                      child: const Icon(Icons.group_rounded, color: Colors.white, size: AppRadii.logoSmall),
                     ),
                     AppPadding.space20,
                     AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
+                      duration: AppDurations.authToggle,
                       child: Text(
                         _isSignUp ? 'Create Account' : 'Welcome Back',
                         key: ValueKey(_isSignUp),
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     AppPadding.space32,
                     // Name field (sign-up only)
                     AnimatedSize(
-                      duration: const Duration(milliseconds: 250),
+                      duration: AppDurations.authExpand,
                       child: _isSignUp
                           ? Column(
                               children: [
